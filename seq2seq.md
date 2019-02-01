@@ -10,11 +10,12 @@
 
 ## beam search 集束搜索
 解码出的(y1,y2,y3....)是一系列的概率,需要找出条件概率最高的的组合,而不是贪心算法求出最大概率y1,根据y1生成y2,求最大概率y2....
+![](imgs/beam-search1.png)
 
 ### 具体算法
 https://www.zhihu.com/question/54356960 整理这个资料
 1. 设beam withd =3,
-![](imgs/beam-search1.png)
+
 
  f
 
