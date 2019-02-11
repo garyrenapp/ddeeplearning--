@@ -12,7 +12,6 @@
 解码出的(y1,y2,y3....)是一系列的概率,需要找出条件概率最高的的组合,而不是贪心算法求出最大概率y1,根据y1生成y2,求最大概率y2....
 ![](imgs/beam-search.png)
 ### 具体算法
-https://www.zhihu.com/question/54356960 
 1. 第一步的时候，我们通过模型计算得到 $ y^{<1>} $的分布概率，选择前B个作为候选结果，设beam width =3 则如下图所示的"in", "jane", "september"
 ![](imgs/beam-search1.png)
 2. 第二步的时候，我们已经选择出了in、jane、September作为第一个单词的三个最可能选择，beam search针对每个第一个单词考虑第二个单词的概率，例如针对单词“in”，我们将 $ y^{<1>} $ ='in'，然后将它喂给  解码输入2，输出结果$ y^{<2>} $  作为第二个单词的概率输出。我们的选择方法为：$ P(y^{<2>},"in"|x)=P(y^{<2>}|"in",x) P("in"|x) $,这样得到10000个候选，同样"jane","Septeber"也各自得到10000个候选总共30000个候选，选择概率最高的前3个，比如得到的结果是：
@@ -69,15 +68,62 @@ B越小
 - 疑问？人类的结果是怎么算的？应该是decode的时候y<1>=jane的概率，把jane输入后，y<2>输出visits的概率依次累计
 - $P(y^{*}|x) > P(\hat y|x)$ 的情况：人类翻译概率要比beam search好 **所以Beam search 算法出错了**
 - $P(y^{*}|x) <= P(\hat y|x)$ 的情况：beam search 翻译结果比人类的好，**所以这里是RNN模型出错了**
+  
+对各个句子进行检测，得到每个句子对应的出错情况，那么根据整个开发集的上算法错误和模型错误的比例，就可以针对性地对二者之一进行改进和修正了。
+![](imgs/error-analysis-beam-search2.png)
 
+## BLEU Score
+对于机器翻译系统来说，一种语言对于另外一种语言的翻译常常有多种正确且合适的翻译，我们无法做到像图像识别一样有固定准确度答案，所以针对不同的翻译结果，往往很难评估那一个结果是更好的，哪一个翻译系统是更加有效的。这里引入Bleu score 用来评估翻译系统的准确性。（Bleu, bilingual evaluation understudy）
+
+**评估机器翻译**：
+如下面的法语翻译的例子，我们有两种不同的翻译，但是两种翻译都是正确且较好的翻译结果。
+Bleu score 的评估理念是观察机器生成的翻译结果中的每一个词是否出现在至少一个人工翻译结果的参考之中。
+如下图Reference1、2是人工翻译的参考
+![](imgs/bleu.png)
+- Precision: 观察输出结果的每一个词是否出现在参考中,但是有缺点比如MT(machine translation) Output的翻译结果很糟糕全部都是the,但是他却是7/7 精度很高
+- Modified Precision：改进后的算法，将每个单词设置一个得分上限（单个参考句子中出现的最大的次数，如图中
+  the单词的上限为2）。
+
+### Bleu score on bigrams 
+与单个词的评估相似，这里我们以两个相邻的单词作为一个二元词组来进行Bleu得分评估，得到机器翻译的二元词组的得分和其相应的得分上限，进而得到改进的精确度。
+如下图，MT output：The cat the cat on the mat
+二元组为(The cat)(cat the)(the cat)(cat on)(on the)(the mat),precision = 4/6
+![](imgs/bleu-score-on-bigrams.png)
+对于不同的n-gram，我们计算改良的精确度得分的公式如下：
+$$
+{P_1}{\rm{ = }}\frac{{\sum\limits_{unigram \in \widehat y} {Coun{t_{clip}}(unigram)} }}{{\sum\limits_{unigram \in \widehat y} {Count(unigram)} }}
+$$
+$$
+{P_n}{\rm{ = }}\frac{{\sum\limits_{n - gram \in \widehat y} {Coun{t_{clip}}(n - gram)} }}{{\sum\limits_{n - gram \in \widehat y} {Count(n - gram)} }}
+$$
+
+**score细节**
+
+得到每种n-gram的Bleu score： $P_{n} $，如$ P_{1}，P_{2}，P_{3}，P_{4}$ ；
+组合Bleu scores：
+$BP \exp(\dfrac{1}{4}\sum_{n=1}^{4}P_{n})\\$
+
+其中，BP(brevity penalty)简短惩罚，作为一个调节因子，来对太短的翻译结果的翻译系统进行惩罚。
+
+$BP = \left\{ \begin{array}{l} 1, if{\kern 1pt} {\kern 1pt} MT\_length > reference\_length{\kern 1pt} {\kern 1pt} \\ \exp (1 - MT\_length/reference\_length), otherwise \end{array} \right. $
+
+Bleu score 作为机器翻译系统的一种单一评估指标，它有一个虽然不是非常完美，但是却也非常好的效果，其加快了整个机器翻译领域的进程，对机器翻译具有革命性的影响。同时，Bleu score对大多数的文本生成的模型均是有效的评估手段。
 
 ## image captioning
 **本质:** encoder编码阶段用CNN对图像就行编码
 
 ![](imgs/image-caption.png)
 
+## Attention Model
 
-
+<table>
+<td> 
+<img src="imgs/attn_model.png" style="width:800;height:800px;"> <br>
+</td> 
+<td> 
+<img src="imgs/attn_mechanism.png" style="width:800;height:800px;"> <br>
+</td> 
+</table>
 
 
 
