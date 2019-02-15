@@ -115,15 +115,52 @@ Bleu score 作为机器翻译系统的一种单一评估指标，它有一个虽
 ![](imgs/image-caption.png)
 
 ## Attention Model
+**长句子存在的问题**
+
+利用我们前面的编码和解码的RNN模型，我们能够实现较为准确度机器翻译结果。对于短句子来说，其性能是十分良好的，但是如果是很长的句子，翻译的结果就会变差。
+
+对于我们人类进行人工翻译的时候，我们所做的也不是像编码解码RNN模型一样记忆整个输入句子，再进行相应的输出，因为记忆整个长句子是很难的，所以我们是一部分一部分地进行翻译。编码解码RNN模型的结构，其Bleu score会在句子长度超过一定值的时候就会下降，如图中的蓝色线所示。而引入的注意力机制，和人类的翻译过程非常相似，其也是一部分一部分地进行长句子的翻译，而其得到的翻译结果的Bleu曲线则如图中绿色线所示：
+![](imgs/attention-bleu.png)
+attention机制就是翻译生成每个$ y^{<t>}$ 时都给特定的context信息 $c^{<t>} $，这样原文中不同的部分对于翻译当前词会有不同的权重，效果会变好很多，尤其是面对长句子的时候，如上图3中的绿色曲线所示。
+
+attention模型如下图左所示，该模型包括三个模块，其中encoder模块，decoder模块，中间的attention用来生成在翻译每个 $y^{<t>}$ 时的上下文信息 $context^{<i>}$ ，也就是$ c^{<t>} $.
 
 <table>
 <td> 
-<img src="imgs/attn_model.png" style="width:800;height:800px;"> <br>
+<img src="imgs/attn_model.png" style="width:500;height:500px;"> <br>
 </td> 
 <td> 
-<img src="imgs/attn_mechanism.png" style="width:800;height:800px;"> <br>
+<img src="imgs/attn_mechanism.png" style="width:500;height:500px;"> <br>
 </td> 
 </table>
 
+其中encoder部分为bi-lstm模块，针对每个单词向量表示 $x^{<t>}$ 进行前向传播得到输出结果为：
+$a^{<t>}=[\overrightarrow{a}^{<t>},\overleftarrow{a}^{<t>}] $
 
+decoder部分针对每个 y^{<t>} 进行计算时，包括3部分输入：
+
+1. 上下文信息也就是图中的$ context^{<t>}$
+2. 上个时刻的LSTM cell的隐藏状态 $s^{<t-1>}$ (大家需要自行切换符号表示，通常隐藏层状态用$ h^{<t-1>} $来表示)
+3. 上个时刻的decoder输出$ y^{<t-1>}$
+在attention模块部分，我们用 $\alpha^{<t,\tilde{t}>}$ 表示在翻译 $y^{<t>}$ 时应该花费在 $a^{<\tilde{t}>} $上的注意力的数量，因此计算上下文 $context^{<t>} $方式如下：
+
+$$context^{<t>}=\sum_{\tilde{t}=1}^{T_x}{\alpha^{<t,\tilde{t}>}a^{<\tilde{t}>}}$$
+$$ {a^{ < t,t' > }} = \frac{{\exp ({e^{ < t,t' > }})}}{{\sum\limits_{t' = 1}^{{T_x}} {\exp ({e^{ < t,t' > }})} }} $$
+${a^{ < t,t' > }}$的计算细节在 练习题的one_step_attention 函数中
+![](imgs/attention-att.png)
+
+## 触发字检测
+
+一种可以简单应用的触发字检测算法，就是使用RNN模型，将音频信号进行声谱图转化得到图像特征或者使用音频特征，输入到RNN中作为我们的输入。而输出的标签，我们可以以触发字前的输出都标记为0，触发字后的输出则标记为1。
+![](imgs/trigger-word-detection.png)
+
+### 样本生成
+由于音频数据很难标注，因此positive、negative和background音频片段来合成训练样本。在合成的过程中，首先随机的选择一段10s的background，然后随机的插入0-4个positive，最后随机的插入0-2个negative， 这样一来我们可以明确的知道触发字的位置了，可以得到标签y
+
+**在覆写background的同时创建标签**
+随机选择的background是不含触发字“activate”的，因此此时的y<t>=0。当插入positive单词后，需要将相应的时间步标记为1，例如，我们在5s处插入“activate”（长度为50个时间步），那么此时y<688>=y<689>=...=y<737>=1,如下图所示。
+![](imgs/trigger-word-detection2.png)
+
+###模型结构
+![](imgs/model.png)
 
