@@ -32,3 +32,8 @@ $$
 3. 求导数，
 4. 解似然方程 。
 
+
+##微积分
+### 拉格朗日乘子法
+https://www.youtube.com/watch?v=aep6lwPqm6I&list=PLSQl0a2vh4HC5feHa6Rc5c0wbRTx56nF7&index=94
+http://littleshi.cn/online/LagMul.html
