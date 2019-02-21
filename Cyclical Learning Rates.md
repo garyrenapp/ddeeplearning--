@@ -30,7 +30,7 @@
 Dauphin et al. 认为最小化损失的困难来自于鞍点而非局部最小值，鞍点有很小的梯度减慢了学习过程而增加学习率可以快速跳过鞍点。一个更实际的原因是最佳学习率可能在一个界限内，接近最优的学习率在整个训练过程中被使用。
 
 ![](imgs/clr2.png)
-上图红线是triangular策略，上下界是[base_lr =0.001, max_lr =0.006]。周期长度是4000即stepsize=2000。CLR达到相同准确度用的interation更少。
+上图红线是CLR策略，上下界是[base_lr =0.001, max_lr =0.006]。周期长度是4000即stepsize=2000。CLR达到相同准确度用的interation更少。
 
 ![](imgs/CLR1.png)
 如上图三角周期学习率策略，蓝线代表学习率的值，stepsize 是半周期的迭代次数
@@ -54,10 +54,27 @@ locallr = base_lr + (max_lr − base_lr) ∗ math.max(0, (1 − localx))
 使用 CLR 策略还给我们带来的一个好处是我们可以知道什么时候停止训练.实验表明我们用CLR训练3轮就差不多了，训练4或者更多轮能达到更好的结果。还有，停止训练的时候最好在cycle的结尾，即learning rate 在最小处 并且准确度达到了峰值
 
 ### 如何估计base_lr 和 max_lr
+LR range test:设置一个lr的范围，让lr由小到大线性增长。接下来绘制ACC-LR的曲线，
+注意两个时刻(1.base_lr)acc开始上升的时刻 (2.max_lr)acc提升的很慢或者抖动或者开始下降。另外一个经验是最佳学习率通常在可收敛的最大学习率的两倍之内，设置base_lr = 1/3 or 1/4 max_lr.
 
+![](imgs/clr6.png)
+上图所示是 8个epoch跑出来的 LR range test.
+base_lr =0.001 即Acc开始上升的位置
+max_lr =0.006 即Acc开始变慢甚至下降的位置
 
+## 实验基于CAFFE
+### CIFAR-10
+![](imgs/clr7.png)
+one epoch = 500 iterations.
+* base_lr=0.001 max_lr=0.005, stepsize=2000 one cycle =2*stepsize =4000,[0,16000]次迭代即跑了4个cycle
+* 接着重新寻找学习率 stepsize =1000 ....
 
+你可能会认为 triangualr 策略的好处来自于降低学习率，因为这个是acc攀升最多的时候。为此我们做一个测试，lr 从 max_lr开始结果step_size次迭代后衰减到base_lr,而后lr固定在base_lr继续训练。Talbe1显示了最终的acc是78.5%，证明对于CLR方法提高降低学习率都很重要
+![](imgs/CLR8.png)
 
+**CLR的exp_range策略**:Tabel1显示CAFFE的exp策略测试最好的结果是70000次迭代acc79.1,exp_range 用42000次迭代达到82.2，42000次足够运行到70000次没有再提升
+
+**和自适应学习率对比**
 
 
 引用：
