@@ -62,20 +62,34 @@ LR range test:设置一个lr的范围，让lr由小到大线性增长。接下�
 base_lr =0.001 即Acc开始上升的位置
 max_lr =0.006 即Acc开始变慢甚至下降的位置
 
-## 实验基于CAFFE
-### CIFAR-10
+## 实验
+### CIFAR 实验
 ![](imgs/clr7.png)
 one epoch = 500 iterations.
 * base_lr=0.001 max_lr=0.005, stepsize=2000 one cycle =2*stepsize =4000,[0,16000]次迭代即跑了4个cycle
 * 接着重新寻找学习率 stepsize =1000 ....
 
-你可能会认为 triangualr 策略的好处来自于降低学习率，因为这个是acc攀升最多的时候。为此我们做一个测试，lr 从 max_lr开始结果step_size次迭代后衰减到base_lr,而后lr固定在base_lr继续训练。Talbe1显示了最终的acc是78.5%，证明对于CLR方法提高降低学习率都很重要
+你可能会认为 triangualr 策略的好处来自于降低学习率，因为这个是acc攀升最多的时候。为此我们做一个测试，lr 从 max_lr开始结果step_size次迭代后衰减到base_lr,而后lr固定在base_lr继续训练。Talbe1显示了最终的acc是78.5%，证明对于CLR方法提高和降低学习率都很重要
 ![](imgs/CLR8.png)
 
-**CLR的exp_range策略**:Tabel1显示CAFFE的exp策略测试最好的结果是70000次迭代acc79.1,exp_range 用42000次迭代达到82.2，42000次足够运行到70000次没有再提升
+**CLR的exp_range策略**:Tabel1显示Caffe的exp策略测试最好的结果是70000次迭代acc79.1,exp_range 用42000次迭代达到82.2，42000次足够运行到70000次没有再提升
 
 **和自适应学习率对比**
+![](imgs/CLR9.png)
+Table3显示CLR+一些自适应学习方法在25000次迭代就能达到自适应学习方法70000次迭代的acc
 
+![](imgs/clr10.png)
+图5显示Nesterov+CLR 25000次迭代acc就到81.3%,Adam+CLR 和 Adam 没什么差别。
+当CLR+自适应学习率的时候，CLR的效果有时会打折扣，但是CLR仍有价值因为他基本没有计算量的消耗。
+
+#### ResNets, Stochastic Depth, and DenseNets
+下面是应用于残差网络的实验
+![](imgs/clr11.png)
+Table4 列出CLR 和 原论文方法的acc比较。括号是lr的范围
+实验表明CLR能得到相似或者更好的结果
+
+### Imagenet 实验
+略
 
 引用：
 https://www.zybuluo.com/zhuanxu/note/1014851
