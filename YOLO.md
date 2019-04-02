@@ -32,7 +32,7 @@ YOLO的结构非常简单，就是单纯的卷积、池化最后加了两层全�
 ① 20个对象分类的概率
 因为YOLO支持识别20种不同的对象（人、鸟、猫、汽车、椅子等），所以这里有20个值表示该网格位置存在任一种对象的概率。
 ② 2个bounding box的位置
-每个bounding box需要4个数值来表示其位置，(Center_x,Center_y,width,height)，即(bounding box的中心点的x坐标，y坐标，bounding box的宽度，高度)，2个bounding box共需要8个数值来表示其位置。
+xy表示bounding box的中心相对于cell左上角坐标偏移，宽高则是相对于整张图片的宽高进行归一化的
 ③ 2个bounding box的置信度
 bounding box的置信度 = 该bounding box内存在对象的概率 * 该bounding box与该对象实际bounding box的IOU
 用公式来表示就是
@@ -68,6 +68,8 @@ A: 小目标检测效果不好的原因是：
 
 ![](imgs/yolov1-loss.png)
 
+
+## YOLOV3
 https://mp.weixin.qq.com/s/4L9E4WGSh0hzlD303036bQ
 注意yolov3 anchor中心点 不是网格中心点了， 是网格左上角
 同时每一个bounding box预测5个坐值，分别为 tx,ty,tw,th,totx,ty,tw,th,to ，其中前四个是坐标，toto是置信度。如果这个cell距离图像左上角的边距为 (cx,cy)(cx,cy) 以及该cell对应box（bounding box prior）的长和宽分别为 (pw,ph)(pw,ph)，那么预测值可以表示为
@@ -77,3 +79,10 @@ https://mp.weixin.qq.com/s/4L9E4WGSh0hzlD303036bQ
 
 
 
+YOLOv3 predicts an objectness score for each bounding
+box using logistic regression. This should be 1 if the bounding box prior overlaps a ground truth object by more than
+any other bounding box prior. **If the bounding box prior is not the best but does overlap a ground truth object by
+more than some threshold we ignore the prediction, following [17]. We use the threshold of .5.** Unlike [17] our system
+only assigns one bounding box prior for each ground truth
+object. If a bounding box prior is not assigned to a ground
+truth object it incurs no loss for coordinate or class predictions, only objectness.

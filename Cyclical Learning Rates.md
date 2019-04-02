@@ -91,8 +91,12 @@ Table4 列出CLR 和 原论文方法的acc比较。括号是lr的范围
 ### Imagenet 实验
 略
 
-引用：
-https://www.zybuluo.com/zhuanxu/note/1014851
+Refrence：
 https://github.com/bckenstler/CLR
 https://sgugger.github.io/the-1cycle-policy.html
 https://sgugger.github.io/how-do-you-find-a-good-learning-rate.html
+https://github.com/adambielski/Learning-Rate
+
+
+## 补充fast.ai的经验
+https://sgugger.github.io/the-1cycle-policy.html
