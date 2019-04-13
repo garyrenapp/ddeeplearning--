@@ -68,15 +68,84 @@ A: 小目标检测效果不好的原因是：
 
 ![](imgs/yolov1-loss.png)
 
+## YOLOV2
+代码https://github.com/experiencor/keras-yolo2/blob/master/Yolo%20Step-by-Step.ipynb
+
+YOLOv1虽然检测速度快，但在定位方面不够准确，并且召回率较低。为了提升定位准确度，改善召回率，YOLOv2在YOLOv1的基础上提出了几种改进策略，如下图所示，可以看到，一些改进方法能有效提高模型的mAP.
+（1）Batch Normalization
+
+YOLOv2中在每个卷积层后加Batch Normalization(BN)层，去掉dropout. BN层可以起到一定的正则化效果，能提升模型收敛速度，防止模型过拟合。YOLOv2通过使用BN层使得mAP提高了2%。
+（2）High Resolution Classifier
+
+目前的大部分检测模型都会使用主流分类网络（如vgg、resnet）在ImageNet上的预训练模型作为特征提取器,
+而这些分类网络大部分都是以小于256x256的图片作为输入进行训练的，低分辨率会影响模型检测能力。YOLOv2将输入图片的分辨率提升至448x448，为了使网络适应新的分辨率，YOLOv2先在ImageNet上以448x448的分辨率对网络进行10个epoch的微调，让网络适应高分辨率的输入。通过使用高分辨率的输入，YOLOv2的mAP提升了约4%。
+
+（3）Convolutional With Anchor Boxes
+
+YOLOv1利用全连接层直接对边界框进行预测，导致丢失较多空间信息，定位不准。YOLOv2去掉了YOLOv1中的全连接层，使用Anchor Boxes预测边界框，同时为了得到更高分辨率的特征图，YOLOv2还去掉了一个池化层。由于图片中的物体都倾向于出现在图片的中心位置，若特征图恰好有一个中心位置，利用这个中心位置预测中心点落入该位置的物体，对这些物体的检测会更容易。所以总希望得到的特征图的宽高都为奇数。YOLOv2通过缩减网络，使用416x416的输入，模型下采样的总步长为32，最后得到13x13的特征图，然后对13x13的特征图的每个cell预测5个anchor boxes，对每个anchor box预测边界框的位置信息、置信度和一套分类概率值。使用anchor
+boxes之后，YOLOv2可以预测13x13x5=845个边界框，模型的召回率由原来的81%提升到88%，mAP由原来的69.5%降低到69.2%.召回率提升了7%，准确率下降了0.3%。
+
+（4）Dimension Clusters
+
+在Faster R-CNN和SSD中，先验框都是手动设定的，带有一定的主观性。YOLOv2采用k-means聚类算法对训练集中的边界框做了聚类分析，选用boxes之间的IOU值作为聚类指标。综合考虑模型复杂度和召回率，最终选择5个聚类中心，得到5个先验框，发现其中中扁长的框较少，而瘦高的框更多，更符合行人特征。通过对比实验，发现用聚类分析得到的先验框比手动选择的先验框有更高的平均IOU值，这使得模型更容易训练学习。
+
+（5）New Network：Darknet-19
+
+YOLOv2采用Darknet-19，其网络结构如下图所示，包括19个卷积层和5个max pooling层，主要采用3x3卷积和1x1卷积，这里1x1卷积可以压缩特征图通道数以降低模型计算量和参数，每个卷积层后使用BN层以加快模型收敛同时防止过拟合。最终采用global avg pool 做预测。采用YOLOv2，模型的mAP值没有显著提升，但计算量减少了。
+
+（6）Direct location prediction
+
+Faster R-CNN使用anchor boxes预测边界框相对先验框的偏移量，由于没有对偏移量进行约束，每个位置预测的边界框可以落在图片任何位置，会导致模型不稳定，加长训练时间。YOLOv2沿用YOLOv1的方法，根据所在网格单元的位置来预测坐标,则Ground Truth的值介于0到1之间。网络中将得到的网络预测结果再输入sigmoid函数中，让输出结果介于0到1之间。设一个网格相对于图片左上角的偏移量是cx，cy。先验框的宽度和高度分别是pw和ph，则预测的边界框相对于特征图的中心坐标(bx，by)和宽高bw、bh的计算
+
+YOLOv2结合Dimention Clusters, 通过对边界框的位置预测进行约束，使模型更容易稳定训练，这种方式使得模型的mAP值提升了约5%。
+（7）Fine-Grained Features
+
+YOLOv2借鉴SSD使用多尺度的特征图做检测，提出pass through层将高分辨率的特征图与低分辨率的特征图联系在一起，从而实现多尺度检测。YOLOv2提取Darknet-19最后一个max pool层的输入，得到26x26x512的特征图。经过1x1x64的卷积以降低特征图的维度，得到26x26x64的特征图，然后经过pass through层的处理变成13x13x256的特征图（抽取原特征图每个2x2的局部区域组成新的channel，即原特征图大小降低4倍，channel增加4倍），再与13x13x1024大小的特征图连接，变成13x13x1280的特征图，最后在这些特征图上做预测。使用Fine-Grained Features，YOLOv2的性能提升了1%.
+
+* 注：pass through 是什么，先看下面darket19的模型图，这个input size小，和yolov2的input不一样，凑合着看，一共5个maxpool 在第五个maxpool的前面 ，取了一个pass through,26*26  512 ,采用64个1*1卷积核进行卷积,变成26*26 64，这个时候进行在numpy 叫做reshape+swapaxes，在tf中叫做[tf.space_to_depth](https://github.com/happycube/tensorflow-1/blob/master/tensorflow/g3doc/api_docs/python/functions_and_classes/shard6/tf.space_to_depth.md) 变成13*13 64，再和后面的层concat，具体看代码吧。
+```python
+import numpy as np 
+
+def space_to_depth(x, block_size): 
+    x = np.asarray(x) 
+    batch, height, width, depth = x.shape 
+    reduced_height = height // block_size 
+    reduced_width = width // block_size 
+    y = x.reshape(batch, reduced_height, block_size, 
+         reduced_width, block_size, depth) 
+    z = np.swapaxes(y, 2, 3).reshape(batch, reduced_height, reduced_width, -1) 
+    return z 
+```
+
+![](imgs/YOLOv2-02.png)
+
+（8）Multi-Scale Training
+
+YOLOv2中使用的Darknet-19网络结构中只有卷积层和池化层，所以其对输入图片的大小没有限制。YOLOv2采用多尺度输入的方式训练，在训练过程中每隔10个batches,重新随机选择输入图片的尺寸，由于Darknet-19下采样总步长为32，输入图片的尺寸一般选择32的倍数{320,352,…,608}。采用Multi-Scale Training, 可以适应不同大小的图片输入，当采用低分辨率的图片输入时，mAP值略有下降，但速度更快，当采用高分辨率的图片输入时，能得到较高mAP值，但速度有所下降。
+
+YOLOv2借鉴了很多其它目标检测方法的一些技巧，如Faster R-CNN的anchor boxes, SSD中的多尺度检测。除此之外，YOLOv2在网络设计上做了很多tricks,使它能在保证速度的同时提高检测准确率，Multi-Scale Training更使得同一个模型适应不同大小的输入，从而可以在速度和精度上进行自由权衡。
+
+YOLOv2的训练
+
+YOLOv2的训练主要包括三个阶段。
+第一阶段：先在ImageNet分类数据集上预训练Darknet-19，此时模型输入为224224,共训练160个epochs。
+第二阶段：将网络的输入调整为448448,继续在ImageNet数据集上finetune分类模型，训练10个epochs，此时分类模型的top-1准确度为76.5%，而top-5准确度为93.3%。
+第三个阶段：修改Darknet-19分类模型为检测模型，并在检测数据集上继续finetune网络。
+网络修改包括（网路结构可视化）：移除最后一个卷积层、global avgpooling层以及softmax层，并且新增了三个332014卷积层，同时增加了一个passthrough层，最后使用1*1卷积层输出预测结果。
+
 
 ## YOLOV3
 https://mp.weixin.qq.com/s/4L9E4WGSh0hzlD303036bQ
 注意yolov3 anchor中心点 不是网格中心点了， 是网格左上角
-同时每一个bounding box预测5个坐值，分别为 tx,ty,tw,th,totx,ty,tw,th,to ，其中前四个是坐标，toto是置信度。如果这个cell距离图像左上角的边距为 (cx,cy)(cx,cy) 以及该cell对应box（bounding box prior）的长和宽分别为 (pw,ph)(pw,ph)，那么预测值可以表示为
+同时每一个bounding box预测5个坐值，分别为 tx,ty,tw,th,to ，其中前四个是坐标，to是置信度。如果这个cell距离图像左上角的边距为 (cx,cy)(cx,cy) 以及该cell对应box（bounding box prior）的长和宽分别为 (pw,ph)(pw,ph)，那么预测值可以表示为
 ![](imgs/yolo3-1.jpg)
-
 ![](imgs/yolo3-2.jpg)
-
+### yolov3 的数据集怎么准备
+https://github.com/xiaomaxiao/yolov3/blob/master/model/generator.py
+说下答题的思路：
+为每一个gt box计算与anchor的iou,选择iou最大的那个anchor。
+### 训练的时候
+对于confidence的计算，因为背景区域过多，需要计算一个ignore mask，就是对于背景区域预测出来的anchor和gtbox的iou如果大于0.5 则，不参与loss的计算。
 
 
 YOLOv3 predicts an objectness score for each bounding
