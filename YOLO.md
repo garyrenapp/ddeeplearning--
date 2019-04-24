@@ -100,7 +100,7 @@ Faster R-CNN使用anchor boxes预测边界框相对先验框的偏移量，由�
 YOLOv2结合Dimention Clusters, 通过对边界框的位置预测进行约束，使模型更容易稳定训练，这种方式使得模型的mAP值提升了约5%。
 （7）Fine-Grained Features
 
-YOLOv2借鉴SSD使用多尺度的特征图做检测，提出pass through层将高分辨率的特征图与低分辨率的特征图联系在一起，从而实现多尺度检测。YOLOv2提取Darknet-19最后一个max pool层的输入，得到26x26x512的特征图。经过1x1x64的卷积以降低特征图的维度，得到26x26x64的特征图，然后经过pass through层的处理变成13x13x256的特征图（抽取原特征图每个2x2的局部区域组成新的channel，即原特征图大小降低4倍，channel增加4倍），再与13x13x1024大小的特征图连接，变成13x13x1280的特征图，最后在这些特征图上做预测。使用Fine-Grained Features，YOLOv2的性能提升了1%.
+YOLOv2借鉴SSD使用多尺度的特征图做检测，提出pass through层将高分辨率的特征图与低分辨率的特征图联系在一起，从而实现多尺度检测。YOLOv2提取Darknet-19最后一个max pool层的输入，得到26x26x512的特征图。经过1x1x64的卷积以降低特征图的维度，得到26x26x64的特征图，然后经过pass through层的处理变成13x13x256的特征图（抽取原特征图每个2x2的局部区域组成新的channel，即原特征图大小降低2倍，channel增加4倍），再与13x13x1024大小的特征图连接，变成13x13x1280的特征图，最后在这些特征图上做预测。使用Fine-Grained Features，YOLOv2的性能提升了1%.
 
 * 注：pass through 是什么，先看下面darket19的模型图，这个input size小，和yolov2的input不一样，凑合着看，一共5个maxpool 在第五个maxpool的前面 ，取了一个pass through,26*26  512 ,采用64个1*1卷积核进行卷积,变成26*26 64，这个时候进行在numpy 叫做reshape+swapaxes，在tf中叫做[tf.space_to_depth](https://github.com/happycube/tensorflow-1/blob/master/tensorflow/g3doc/api_docs/python/functions_and_classes/shard6/tf.space_to_depth.md) 变成13*13 64，再和后面的层concat，具体看代码吧。
 ```python
