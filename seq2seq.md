@@ -219,3 +219,21 @@ def model(Tx, Ty, n_a, n_s, human_vocab_size, machine_vocab_size):
 ###模型结构
 ![](imgs/model.png)
 
+
+
+### teacher forcing
+训练
+
+
+### 机器翻译实例
+https://github.com/tensorflow/tensorflow/blob/r1.13/tensorflow/contrib/eager/python/examples/nmt_with_attention/nmt_with_attention.ipynb
+
+
+### attention形式https://stackoverflow.com/questions/44238154/what-is-the-difference-between-luong-attention-and-bahdanau-attention
+https://blog.csdn.net/BVL10101111/article/details/78470716
+
+Luong Attention
+Bahdanau Attention
+
+
+### attention的可视化
