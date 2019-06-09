@@ -1,5 +1,5 @@
 
-
+https://www.bilibili.com/video/av18156598/?p=15
 ## 文件处理命令
 ### cat -n  显示行号
 ### tac 倒序显示
@@ -17,3 +17,12 @@
 ### tail 
 * tail -n 100 /etc/s        后100行
 * tail -f 动态显示，当文件内容变化时显示会更新
+### ln 链接文件
+* 软连接 ln -s /etc/issue tmp/issue.soft
+类似widows的快捷方式
+* 硬连接 ln /etc/issue tmp/issue.hard
+相当于拷贝cp，跟cp不同的是，两个文件可以同步更新。
+源文件即使删除，硬链接依然可以访问。
+硬链接不可以跨分区。
+
+
