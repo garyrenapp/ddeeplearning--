@@ -1,8 +1,8 @@
 # Cyclical Learning Rates for Training Neural Networks
-
+ 
 2018之前训练网络一直都是Adam,在大部分场景中Adam足够好了。然而现在我用Cyclical Learning Rate。
 
-
+  
 ##摘要
 训练深模型时学习率是一个很重要的超参数(hper-parameter).本文描述了一个新的设置学习率的方法叫做**周期学习率(cyclical learing rates,CLR)**.该方法不是单调的降低学习率，而是使学习率在合理的边界值内循环变化。使用周期学习率而不是固定值进行训练可以提高分类准确率，而无需进行调整并且通常可以减少迭代次数。本文还描述了一种估算“合理界限”的简单方法 -- 在几个周期内线性的增加学习率。另外，周期学习率也在CIFAR10和CIFAR100对ResNets，Stochastic Depth networks,  DenseNets, 在ImageNet对AlexNet、GoogLeNet进行了验证。
 
