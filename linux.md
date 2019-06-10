@@ -123,3 +123,9 @@ zip [-r][压缩后文件名][文件或者目录]
 * ~/.bash_profile
 * ~/.bashrc
 之前总是 export 环境变量，退出终端后就失效了，原来是要写入文件中才能永久生效
+
+
+### screen
+* screen -ls 列出当前的所有screen
+* screen -S name 新建screen
+* screen -X -S id quit 删除screen
