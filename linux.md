@@ -2,7 +2,7 @@
 https://www.bilibili.com/video/av18156598/?p=15
 ### 管道符号 |
 用法: command 1 | command 2 他的功能是把第一个命令command 1执行的结果作为command 2的输入传给command 2，例如:
-
+~
 ### cat -n  显示行号
 ### tac 倒序显示
 ### more 分页显示 
