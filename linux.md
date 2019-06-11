@@ -129,3 +129,6 @@ zip [-r][压缩后文件名][文件或者目录]
 * screen -ls 列出当前的所有screen
 * screen -S name 新建screen
 * screen -X -S id quit 删除screen
+#### 分屏
+* control + a 然后 shfit + s   横屏
+* control +
