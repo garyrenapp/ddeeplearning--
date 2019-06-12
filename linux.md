@@ -131,4 +131,6 @@ zip [-r][压缩后文件名][文件或者目录]
 * screen -X -S id quit 删除screen
 #### 分屏
 * control + a 然后 shfit + s   横屏
-* control +
+* control + a 然后 tab  切换窗口
+* control + a 然后 c  新建窗口
+* control + a 然后 x  关闭窗口
