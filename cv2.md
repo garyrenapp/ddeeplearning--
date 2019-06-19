@@ -181,3 +181,71 @@ CMYK 色彩空间中，C（cyan）代表青色，M（magenta）代表洋红色�
 CMYK 主要使用在印刷方面，比如喷墨打印机一般都是使用这四种颜色的墨盒。在 RGB 色彩空间里红色，绿色和蓝色叠加起来的时候是白色，但在 CMYK 色彩空间中，青色，洋红色，黄色叠加起来是黑色。
 
 但是实际情况中，颜色叠加起来会是褐色，所以还是会加上单独的黑色。相比于 RGB，CMYK 更加实用于在白色的介质上打印图像。
+
+# 特征点匹配
+https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_feature_homography/py_feature_homography.html#py-feature-homography
+
+```python
+import numpy as np
+import cv2
+from matplotlib import pyplot as plt
+
+MIN_MATCH_COUNT = 10
+
+img1 = cv2.imread('box.png',0)          # queryImage
+img2 = cv2.imread('box_in_scene.png',0) # trainImage
+
+# Initiate SIFT detector
+#cv2.SIFT(100) 保留100个特征点
+sift = cv2.SIFT()
+
+# find the keypoints and descriptors with SIFT
+kp1, des1 = sift.detectAndCompute(img1,None)
+kp2, des2 = sift.detectAndCompute(img2,None)
+
+FLANN_INDEX_KDTREE = 0
+index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
+search_params = dict(checks = 50)
+
+flann = cv2.FlannBasedMatcher(index_params, search_params)
+
+matches = flann.knnMatch(des1,des2,k=2)
+
+# store all the good matches as per Lowe's ratio test.
+good = []
+for m,n in matches:
+    if m.distance < 0.7*n.distance:
+        good.append(m)
+```
+
+接下来透视变换
+![](imgs/sift1.png)
+```python
+if len(good)>MIN_MATCH_COUNT:
+    src_pts = np.float32([ kp1[m.queryIdx].pt for m in good ]).reshape(-1,1,2)
+    dst_pts = np.float32([ kp2[m.trainIdx].pt for m in good ]).reshape(-1,1,2)
+
+    M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC,5.0)
+    matchesMask = mask.ravel().tolist()
+
+    h,w = img1.shape
+    pts = np.float32([ [0,0],[0,h-1],[w-1,h-1],[w-1,0] ]).reshape(-1,1,2)
+    dst = cv2.perspectiveTransform(pts,M)
+
+    img2 = cv2.polylines(img2,[np.int32(dst)],True,255,3, cv2.LINE_AA)
+
+else:
+    print "Not enough matches are found - %d/%d" % (len(good),MIN_MATCH_COUNT)
+    matchesMask = None
+```
+接下来透视变换把图抠出来
+```python
+pts = pts.reshape(4,2)
+w = pts[1][0] - pts[0][0]
+h = pts[2][1] - pts[1][1]
+pt2 = np.array([[0,0],[w,0],[w,h],[0,h]],dtype='float32')
+pt1 = pt1.astype('float32')
+M = cv2.getPerspectiveTransform(pt1,pt2)
+perspective = cv2.warpPerspective(dst,M,(w,h),cv2.INTER_LINEAR) 
+```
+
