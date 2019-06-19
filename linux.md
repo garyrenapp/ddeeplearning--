@@ -134,3 +134,11 @@ zip [-r][压缩后文件名][文件或者目录]
 * control + a 然后 tab  切换窗口
 * control + a 然后 c  新建窗口
 * control + a 然后 x  关闭窗口
+
+
+### conda 
+* conda activate name  or source acitvate name 
+* conda remove -n name 
+* conda create -n name python=verison...
+* conda env list 
+
