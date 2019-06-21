@@ -404,3 +404,120 @@ length=${#array_name[*]}
 # 取得数组单个元素的长度
 lengthn=${#array_name[n]}
 ```
+
+#### printf
+```
+# format-string为双引号
+$ printf "%d %s\n" 1 "abc"
+1 abc
+# 单引号与双引号效果一样 
+$ printf '%d %s\n' 1 "abc" 
+1 abc
+# 没有引号也可以输出
+$ printf %s abcdef
+abcdef
+# 格式只指定了一个参数，但多出的参数仍然会按照该格式输出，format-string 被重用
+$ printf %s abc def
+abcdef
+$ printf "%s\n" abc def
+```
+
+#### if 
+```
+#!/bin/sh
+a=10
+b=20
+if [ $a == $b ]
+then
+   echo "a is equal to b"
+elif [ $a -gt $b ]
+then
+   echo "a is greater than b"
+elif [ $a -lt $b ]
+then
+   echo "a is less than b"
+else
+   echo "None of the condition met"
+fi
+```
+
+#### case
+```
+case $aNum in
+    1)  echo 'You select 1'
+    ;;
+    2)  echo 'You select 2'
+    ;;
+    3)  echo 'You select 3'
+    ;;
+    4)  echo 'You select 4'
+    ;;
+    *)  echo 'You do not select a number between 1 to 4'
+    ;;
+esac
+```
+
+#### for
+```
+#!/bin/bash
+for str in 'This is a string'
+do
+    echo $str
+done
+```
+
+#### while
+```
+#!/bin/bash
+COUNTER = 0 
+while [ $COUNTER -lt 5]
+do
+    COUNTER = 'expr $COUNTER + 1'
+    echo $COUNTER
+done
+```
+
+#### 函数
+在Shell中，调用函数时可以向其传递参数。在函数内部，通过$n的形式获取参数的值。
+例如$1代表第一个参数
+```
+#!/bin/bash
+funWithParam(){
+    echo "The value of the first parameter is $1 !"
+    echo "The value of the second parameter is $2 !"
+    echo "The value of the tenth parameter is $10 !" #大于10的失手需要加{}
+    echo "The value of the tenth parameter is ${10} !"
+    echo "The value of the eleventh parameter is ${11} !"
+    echo "The amount of the parameters is $# !"  # 参数个数
+    echo "The string of the parameters is $* !"  # 传递给函数的所有参数
+}
+funWithParam 1 2 3 4 5 6 7 8 9 34 73
+```
+
+#### 输入输出重定向
+* 输出重定向
+```
+$ command > file
+$ command >> file 
+```
+* 输入重定向
+```
+$ wc -l < users
+```
+一般情况下，每个 Unix/Linux 命令运行时都会打开三个文件：
+* 标准输入文件(stdin)：stdin的文件描述符为0，Unix程序默认从stdin读取数据。
+* 标准输出文件(stdout)：stdout 的文件描述符为1，Unix程序默认向stdout输出数据。
+* 标准错误文件(stderr)：stderr的文件描述符为2，Unix程序会向stderr流中写入错误信息。
+```
+$ command >file 2>&1      #输出和错误信息重定向到文件
+$ command >>file 2>&1     #输出和错误信息追加到文件
+$ command < file1 > file2  #将输入重定向到文件1 输出重定向到文件2
+```
+
+* /dev/null 文件
+/dev/null 是一个特殊到文件，写入到它到内容都会被丢弃，如果尝试从该文件读取内容，那么什么也读不到，但是该文件非常游泳。将命令到输出重定向到它，起到禁止输出到效果。
+```
+$command > /dev/null
+```
+
+#### 文件包含
