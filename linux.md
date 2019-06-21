@@ -140,5 +140,267 @@ zip [-r][压缩后文件名][文件或者目录]
 * conda activate name  or source acitvate name 
 * conda remove -n name 
 * conda create -n name python=verison...
+* conda create -n name --clone name 
 * conda env list 
 
+### shell
+http://c.biancheng.net/cpp/view/6999.html
+* cat /etc/shells 查看当前系统可用的shell 
+* echo &SHELL     查看默认shell
+
+#### 第一个shell脚本
+```
+#!/bin/bash
+echo "hello word"
+“#!” 是一个约定的标记，它告诉系统这个脚本需要什么解释器来执行，即使用哪一种Shell。echo命令用于向窗口输出文本。
+```
+#### 运行Shell脚本有两种方法
+* 作为可执行程序
+```
+chmod +x ./test.sh  #使脚本具有执行权限
+./test.sh  #执行脚本
+注意，一定要写成./test.sh，而不是test.sh。运行其它二进制的程序也一样，直接写test.sh，linux系统会去PATH里寻找有没有叫test.sh的，而只有/bin, /sbin, /usr/bin，/usr/sbin等在PATH里，你的当前目录通常不在PATH里，所以写成test.sh是会找不到命令的，要用./test.sh告诉系统说，就在当前目录找。
+```
+* 作为解释器参数
+```
+这种运行方式是，直接运行解释器，其参数就是shell脚本的文件名，如：
+/bin/sh test.sh
+/bin/php test.php
+这种方式运行的脚本，不需要在第一行指定解释器信息(#!/bin/bash这种)
+```
+
+#### 变量
+```
+skill="Java"
+echo $skill
+echo "I am good at ${skill}Script"
+
+#双引号与单引号的区别
+以单引号' '包围变量的值时，单引号里面是什么就输出什么
+以双引号" "包围变量的值时，输出时会先解析里面的变量和命令
+url="http://c.biancheng.net"
+website1='open：${url}'
+website2="open：${url}"
+echo $website1 ->open: ${url}
+echo $website2 ->open: http://c.biancheng.net
+```
+* 将命令的结果赋值给变量
+```
+variable=`command`
+variable=$(command)
+第一种方式把命令用反引号包围起来，反引号和单引号非常相似，容易产生混淆，所以不推荐使用这种方式；第二种方式把命令用$()包围起来，区分更加明显，所以推荐使用这种方式。
+
+log=$(cat log.txt)
+```
+* 只读变量
+```
+使用readonly 将变量变为只读变量
+readonly s_tmp
+```
+* 删除变量
+```
+#!/bin/sh
+myUrl="http://see.xidian.edu.cn/cpp/u/xitong/"
+unset myUrl
+echo $myUrl # 没有输出
+```
+* 特殊变量
+
+特殊变量列表
+变量|含义
+----|----
+$0|当前脚本的文件名
+$n|传递给脚本或函数的参数。n 是一个数字，表示第几个参数。例如，第一个参数是$1，第二个参数$2。
+$#|传递给脚本或函数的参数个数。
+$*|传递给脚本或函数的所有参数。
+$@|传递给脚本或函数的所有参数。被双引号(" ")包含时，与 $* 稍有不同，下面将会讲到。
+$?|上个命令的退出状态，或函数的返回值。
+$$|当前Shell进程ID。对于 Shell 脚本，就是这些脚本所在的进程ID。
+
+* 命令行参数
+运行脚本时传递给脚本的参数称为命令行参数。命令行参数用 $n 表示，例如，$1 表示第一个参数，$2 表示第二个参数，依次类推。
+
+请看下面的脚本：
+```
+#!/bin/bash
+echo "File Name: $0" #输出脚本文件名
+echo "First Parameter : $1"   #输出第一个参数
+echo "First Parameter : $2"   #输出第二个参数
+echo "Quoted Values: $@"      #输出所有参数
+echo "Quoted Values: $*"      #输出所有参数
+echo "Total Number of Parameters : $#"   #输出参数个数
+
+运行结果：
+$./test.sh Zara Ali
+File Name : ./test.sh
+First Parameter : Zara
+Second Parameter : Ali
+Quoted Values: Zara Ali
+Quoted Values: Zara Ali
+Total Number of Parameters : 2
+```
+
+* \$* 和 \$@的区别
+
+* 退出状态
+\$? 可以获取上一个命令的退出状态。所谓退出状态就是上一个命令执行后的返回结果
+
+#### 运算符
+
+算术运算符列表
+运算符|说明|举例
+----|----|----
++	|加法	|`expr $a + $b` 结果为 30。
+-	|减法	|`expr $a - $b` 结果为 10。
+*	|乘法	|`expr $a \* $b` 结果为  200。
+/	|除法	|`expr $b / $a` 结果为 2。
+%	|取余	|`expr $b % $a` 结果为 0。
+=	|赋值	|a=$b 将把变量 b 的值赋给 a。
+==	|相等。用于比较两个数字，相同则返回 true。	|[ \$a == \$b ] 返回 false。
+!=	|不相等。用于比较两个数字，不相同则返回 true。	|[ \$a != \$b ] 返回 true。
+注意：条件表达式要放在方括号之间，并且要有空格，例如 [\$a==\$b] 是错误的，必须写成 [ \$a == \$b ]。
+
+关系运算符列表
+运算符|说明|举例
+----|----|----
+-eq	|检测两个数是否相等，相等返回 true。	|[ \$a -eq \$b ] 返回 true。
+-ne	|检测两个数是否相等，不相等返回 true。	|[ \$a -ne \$b ] 返回 true。
+-gt	|检测左边的数是否大于右边的，如果是，则返回 true。	|[ \$a -gt \$b ] 返回 false。
+-lt	|检测左边的数是否小于右边的，如果是，则返回 true。	|[ \$a -lt \$b ] 返回 true。
+-ge	|检测左边的数是否大等于右边的，如果是，则返回 true。	|[ \$a -ge \$b ] 返回 false。
+-le	|检测左边的数是否小于等于右边的，如果是，则返回 true。	|[ \$a -le \$b ] 返回 true。
+
+
+布尔运算符列表
+运算符|说明|举例
+----|----|----
+!	|非运算，表达式为 true 则返回 false，否则返回 true。	|[ ! false ] 返回 true。
+-o	|或运算，有一个表达式为 true 则返回 true。	|[ \$a -lt 20 -o \$b -gt 100 ] 返回 true。
+-a	|与运算，两个表达式都为 true 才返回 true。	|[ \$a -lt 20 -a \$b -gt 100 ] 返回 false。
+```
+a=10
+b=20
+if [ $a != $b ]
+then
+   echo "$a != $b : a is not equal to b"
+else
+   echo "$a != $b: a is equal to b"
+fi
+if [ $a -lt 100 -a $b -gt 15 ]
+then
+   echo "$a -lt 100 -a $b -gt 15 : returns true"
+else
+   echo "$a -lt 100 -a $b -gt 15 : returns false"
+fi
+```
+
+
+#### 字符串
+```
+单引号
+str='this is a string'
+单引号字符串的限制：
+单引号里的任何字符都会原样输出，单引号字符串中的变量是无效的；
+单引号字串中不能出现单引号（对单引号使用转义符后也不行）。
+
+双引号
+your_name='qinjx'
+str="Hello, I know your are \"$your_name\"! \n"
+双引号的优点：
+双引号里可以有变量
+双引号里可以出现转义字符
+
+拼接字符串
+your_name="qinjx"
+greeting="hello, "$your_name" !"
+greeting_1="hello, ${your_name} !"
+echo $greeting $greeting_1
+
+获取字符串长度
+string="abcd"
+echo ${#string} #输出 4
+
+提取子字符串
+string="alibaba is a great company"
+echo ${string:1:4} #输出liba
+
+查找子字符串
+string="alibaba is a great company"
+echo `expr index "$string" is`
+```
+
+#### 数组
+bash支持一维数组（不支持多维数组），并且没有限定数组的大小。类似与C语言，数组元素的下标由0开始编号。获取数组中的元素要利用下标，下标可以是整数或算术表达式，其值应大于或等于0。
+* 定义数组
+在Shell中，用括号来表示数组，数组元素用“空格”符号分割开。定义数组的一般形式为：
+    array_name=(value1 ... valuen)
+例如：
+```
+array_name=(value0 value1 value2 value3)
+或者
+array_name=(
+value0
+value1
+value2
+value3
+)
+
+还可以单独定义数组的各个分量：
+array_name[0]=value0
+array_name[1]=value1
+array_name[2]=value2
+可以不使用连续的下标，而且下标的范围没有限制。
+```
+* 读取数组
+```
+读取数组元素值的一般格式是：
+    ${array_name[index]}
+例如：
+valuen=${array_name[2]}
+```
+```
+举个例子：
+#!/bin/sh
+NAME[0]="Zara"
+NAME[1]="Qadir"
+NAME[2]="Mahnaz"
+NAME[3]="Ayan"
+NAME[4]="Daisy"
+echo "First Index: ${NAME[0]}"
+echo "Second Index: ${NAME[1]}"
+运行脚本，输出：
+$./test.sh
+First Index: Zara
+Second Index: Qadir
+```
+* 使用@ 或 * 可以获取数组中的所有元素，例如：
+```
+${array_name[*]}
+${array_name[@]}
+```
+```
+举个例子：
+#!/bin/sh
+NAME[0]="Zara"
+NAME[1]="Qadir"
+NAME[2]="Mahnaz"
+NAME[3]="Ayan"
+NAME[4]="Daisy"
+echo "First Method: ${NAME[*]}"
+echo "Second Method: ${NAME[@]}"
+运行脚本，输出：
+$./test.sh
+First Method: Zara Qadir Mahnaz Ayan Daisy
+Second Method: Zara Qadir Mahnaz Ayan Daisy
+```
+* 获取数组的长度
+```
+获取数组长度的方法与获取字符串长度的方法相同，例如：
+纯文本复制
+# 取得数组元素的个数
+length=${#array_name[@]}
+# 或者
+length=${#array_name[*]}
+# 取得数组单个元素的长度
+lengthn=${#array_name[n]}
+```
