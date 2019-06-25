@@ -56,10 +56,10 @@ ohter 去掉读权限
 * find /etc -size +16380 -o -size -20480 两个条件满足一个
 * find /etc -size +16380 -a -type f
 -type 根据文件类型 f文件 d目录 l软链接
-* find /etc -name inittab -exec ls -l{} \;  -exec后者-ok 后面接一个命令.
+* find /etc -name inittab -exec ls -l{} \\;  -exec后者-ok 后面接一个命令.
 -ok有确认的环节
 * find -inum 根据i节点查找
-* find /etc -inum 31123 -exec rm {} \; 根据i节点删除文件，有时候文件名奇形怪状可以根据i节点删除
+* find /etc -inum 31123 -exec rm {} \\; 根据i节点删除文件，有时候文件名奇形怪状可以根据i节点删除
 ### locate 比find速度快
 是从系统维护的文件资料库搜索
 存在的问题，如果新建的文件还没有更新到文件资料库则查不到

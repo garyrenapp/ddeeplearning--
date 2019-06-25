@@ -5,7 +5,7 @@
 ```
 conda acitvate env 激活python3环境，如果不激活python3环境会出现，找不到python.h文件。
 
-c++ -O3 -Wall -shared -std=c++11 -undefined dynamic_lookup `python3 -m pybind11 --includes` nonzero.cpp -o nonzero`python3-config --extension-suffix`
+c++ -O3 -Wall -shared -std=c++11 -undefined dynamic_lookup `python3 -m pybind11 --includes` pse.cpp -o pse`python3-config --extension-suffix`
 ```
 
 ## linux 编译
