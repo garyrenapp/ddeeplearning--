@@ -2,7 +2,23 @@
 https://www.bilibili.com/video/av18156598/?p=15
 ### 管道符号 |
 用法: command 1 | command 2 他的功能是把第一个命令command 1执行的结果作为command 2的输入传给command 2，例如:
-~
+
+### ls
+* 统计当前目下的文件个数  ls -l | grep "^-" | wc -l
+
+### grep 
+Linux系统中grep命令是一种强大的文本搜索工具，它能使用正则表达式搜索文本，并把匹 配的行打印出来。grep全称是Global Regular Expression Print.
+
+* 规则表达式
+
+命令 | 解释
+----| --- 
+^  | ^a 以a开头的行
+$  | $a 以a结尾的行
+
+
+
+
 ### cat -n  显示行号
 ### tac 倒序显示
 ### more 分页显示 
