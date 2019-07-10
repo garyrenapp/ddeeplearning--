@@ -150,7 +150,7 @@ zip [-r][压缩后文件名][文件或者目录]
 * control + a 然后 tab  切换窗口
 * control + a 然后 c  新建窗口
 * control + a 然后 x  关闭窗口
-* control + a 然后 d 退出当前screen
+* control + a 然后 d 退出当前screenss
 
 
 ### conda 
