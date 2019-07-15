@@ -106,8 +106,58 @@ $$
 ## 原理推导 
 getRotationMatrix2D
 https://charlesnord.github.io/2017/04/01/rotation/
-
 ![](imgs/rotate2.jpg)
+
+## 旋转矩阵 防止cut off
+```python
+def warpAffine_Padded(src_h,src_w,M,mode='matrix'):
+    '''
+    重新计算旋转矩阵，防止cut off image
+    args：
+        src_h,src_w 原图的高、宽
+        mode: mode is matrix 时 M 是旋转矩阵
+              mode is angle 时  M 是角度
+    returns:
+        offset_M : 新的旋转矩阵
+        padded_w,padded_h : 图像的新宽、高
+    
+    ------------------------------------
+    用法：
+        h,w = imagetest.shape[0:2]
+        M = cv2.getRotationMatrix2D((w/2,h/2),angle,1.0)
+        offset_M , padded_w , padded_h = warpAffinePadded(h,w,M)
+        rects = cv2.transform(rects,offset_M)
+        imagetest = cv2.warpAffine(imagetest,offset_M,(padded_w,padded_h))
+    '''
+    if(mode == 'angle'):
+        M = cv2.getRotationMatrix2D((src_w/2,src_h/2),M,1.0)
+    
+    # 图像四个顶点
+    lin_pts = np.array([
+        [0,0],
+        [src_w,0],
+        [src_w,src_h],
+        [0,src_h]
+    ])
+    trans_lin_pts = cv2.transform(np.array([lin_pts]),M)[0]
+    
+    #最大最小点
+    min_x = np.floor(np.min(trans_lin_pts[:,0])).astype(int)
+    min_y = np.floor(np.min(trans_lin_pts[:,1])).astype(int)
+    max_x = np.ceil(np.max(trans_lin_pts[:,0])).astype(int)
+    max_y = np.ceil(np.max(trans_lin_pts[:,1])).astype(int)
+
+    offset_x = -min_x if min_x < 0 else 0
+    offset_y = -min_y if min_y < 0 else 0
+    #print('offsetx:{},offsety:{}'.format(offset_x,offset_y))
+    offset_M = M + [[0,0,offset_x],[0,0,offset_y]]
+
+    padded_w = src_w + (max_x - src_w)  + offset_x 
+    padded_h = src_h + (max_y - src_h)  + offset_y 
+    return offset_M,padded_w,padded_h
+
+```
+
 
 # 边缘检测算子
 ## sobel 
