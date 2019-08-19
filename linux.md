@@ -5,6 +5,10 @@ https://www.bilibili.com/video/av18156598/?p=15
 
 ### ls
 * 统计当前目下的文件个数  ls -l | grep "^-" | wc -l
+* ls | head -10 显示前10个
+* ls | sort | head -10 
+* ls -lt 按时间排序从近到远
+* ls -ltr 按时间排序从远到近
 
 ### grep 
 Linux系统中grep命令是一种强大的文本搜索工具，它能使用正则表达式搜索文本，并把匹 配的行打印出来。grep全称是Global Regular Expression Print.
@@ -16,7 +20,9 @@ Linux系统中grep命令是一种强大的文本搜索工具，它能使用正�
 ^  | ^a 以a开头的行
 $  | $a 以a结尾的行
 
-
+### watch 
+* watch [options] command
+* watch -n 1 nvidia-smi 一秒显示一次gpu情况
 
 
 ### cat -n  显示行号
@@ -113,7 +119,7 @@ gzip只能压缩文件，不能压缩目录,不保留原文件
 * zip  unzip
 能保留原文件，可以压缩目录
 zip [-r][压缩后文件名][文件或者目录]
--r 压缩目录
+* zip -r myfile.zip .my/*
 * bzip2 bunzip2 [-k] 保留原文件
 
 
@@ -151,7 +157,7 @@ zip [-r][压缩后文件名][文件或者目录]
 * control + a 然后 c  新建窗口
 * control + a 然后 x  关闭窗口
 * control + a 然后 d 退出当前screenss
-
+* screen -xr 5170.pts-21 当前screen attach的时候 再 attach会报错 重新attach  
 
 ### conda 
 * conda activate name  or source acitvate name 
@@ -167,8 +173,8 @@ http://c.biancheng.net/cpp/view/6999.html
 
 #### 第一个shell脚本
 ```
-#!/bin/bash
 echo "hello word"
+#!/bin/bash
 “#!” 是一个约定的标记，它告诉系统这个脚本需要什么解释器来执行，即使用哪一种Shell。echo命令用于向窗口输出文本。
 ```
 #### 运行Shell脚本有两种方法
@@ -538,3 +544,71 @@ $command > /dev/null
 ```
 
 #### 文件包含
+
+#### 接受键盘输入
+* read [-option] [variable]
+* -p 指定读取值时的提示符
+* -t 指定读取时等待时间
+* read -p "输入数字：" number
+
+#### 随机抽取文件
+```shell
+#!/bin/bash
+
+echo "开始执行数据集split..."
+
+read -p "输入文件路径:" path
+
+echo “统计文件数...”
+
+total=$(ls -l $path | grep "^-" | wc -l )xs
+
+#(( ))是整数运算不支持浮点数
+train_num=$(( $total * 9 /10 ));
+test_num=$(( $total - $train_num ));
+echo "文件总数:" $total "训练集" $train_num "测试集" $test_num
+
+test_files=$(find $path -name "*.jpg" | sort --random-sort | head -$test_num)
+
+echo "创建test文件夹"
+mkdir ./test
+for filename in $test_files
+do
+    mv $filename ./test
+done
+
+echo "处理完成"
+```
+
+
+
+
+### git
+* 创建分支  git branch issue55分支名字
+* 查看分支  git branch  查看本地分支
+* 查看远程分支 git branch -a
+* 切换远程分支 git checkout -b issue(本地分支名) origin/dev(远程分支名)
+* push 到远程分支
+```
+git push <远程主机名> <本地分支名>:<远程分支名>
+git push origin PSENET:fintune_dip
+```
+* 一旦远程主机的版本库有了更新，需要将这些更新取回本地，这时就要用到git fetch命令。
+
+
+### centos 编译tensorflow c++ 动态库
+
+#### 安装bazel
+##### Installing Bazel on CentOS 7
+* https://docs.bazel.build/versions/master/install-redhat.html
+* .repo 下载地址 https://copr.fedorainfracloud.org/coprs/vbatts/bazel/
+* 把*.repo 放到 /etc/yum.repos.d/ 下
+* yum install bazel
+**因为我要编译tensorflow1.10版本的c++ 需要bazel0.15的版本上述方法装的是最新版的bazel行不通** 
+* 在git上直接下载二进制文件 bazel-0.15.0-installer-linux-x86_64.sh
+* chmod +x bazel-0.15.0-installer-linux-x86_64.sh
+* ./bazel-0.15.0-installer-linux-x86_64.sh
+
+#### git clone tensorflow 源代码
+* git clone git@github.com:tensorflow/tensorflow.git
+* git checkout -b tensorflow origin/r1.10

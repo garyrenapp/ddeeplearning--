@@ -119,7 +119,50 @@ string::size_type sumLength(const string & , const string &);'
 //返回的式指针。
 decltype(sumLength) * getFcn(const string &);
 ```
+## 友元
+* 如果一个类指定类友元类，则友元类的成员函数可以访问此类包括private在内的所有成员。
+```cpp
+class Screen{
+    //Window_mgr可以反问Screen的私有成员
+    friend class Window_mgr;
+}
+```
+* 除类令整个Windows_mgr作为友元,Screen还可以只为成员函数提供访问权限
+```cpp
+class Screen{
+    friend void Window_mgr::clear();
+}
+```
+## 委托构造函数
 
+## 静态成员
+* 与类本身相关，而不是与类的各个对象相关
+```cpp
+#include <string>
+#include <iostream> 
+class Acount{
+public:
+    static double rate(){return interestRate;}
+private:
+    static double interestRate;  
+};
+double Acount::interestRate = 0.0;
+int main(){
+double r ; 
+r = Acount::rate();
+std::cout << "rate:" << r << std::endl;
+return 0;
+}
+
+```
+* 虽然静态成员不属于类的某个对象，但是仍然可以使用类的对象、引用或者指针来访问静态成员
+```cpp
+Acount ac1;
+Acount *ac2 = &ac2;
+double r ;
+r = ac1.rate();
+r = ac2->rate();
+```
 
 # pybind11
 ## mac 编译
@@ -141,7 +184,7 @@ $ c++ -O3 -Wall -shared -std=c++11 -fPIC `python3 -m pybind11 --includes` exampl
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <pybind11/stl.h>
-#include <vector>
+#include <vector> 
 using py = pybind11 ;
 std::vector< std::vector<int> >find_label_coord(
     py::array_t<int32_t, py::array::c_style> label_map,
