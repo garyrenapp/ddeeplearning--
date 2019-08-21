@@ -609,6 +609,99 @@ git push origin PSENET:fintune_dip
 * chmod +x bazel-0.15.0-installer-linux-x86_64.sh
 * ./bazel-0.15.0-installer-linux-x86_64.sh
 
-#### git clone tensorflow 源代码
+#### 编译 tensorflow 源文件
 * git clone git@github.com:tensorflow/tensorflow.git
 * git checkout -b tensorflow origin/r1.10
+* [cpu 指令]bazel build --config=opt //tensorflow:libtensorflow_cc.so [gpu指令] bazel build --config=opt --config=cuda //tensorflow:libtensorflow_cc.so
+**编译完成后生成libtensorflow_cc.so libtensorflow_framework.so 动态库文件**
+
+#### 编译第三方库文件
+* cd tensorflow
+* cd tensorflow/contrib/makefile/
+* ./bulid_all_linux.sh
+
+#### 使用cmake 构建程序
+```cpp
+#include <tensorflow/core/platform/env.h>
+#include <tensorflow/core/public/session.h>
+
+#include <iostream>
+
+using namespace std;
+using namespace tensorflow;
+
+int main()
+{
+    Session* session;
+    Status status = NewSession(SessionOptions(), &session);
+    if (!status.ok()) {
+        cout << status.ToString() << "\n";
+        return 1;
+    }
+    cout << "Session successfully created.\n";
+}
+```
+
+*  创建CMakeLists.txt
+```cpp
+#设置cmake的最小版本
+cmake_minimum_required(VERSION 3.10)
+#项目名称
+project(demo)
+#设置c++编译器
+set(CMAKE_CXX_STANDARD 11)
+#设置TENSORFLOW_DIR变量，变量内容为安装的tensorflow文件夹路径
+set(TENSORFLOW_DIR /home/ma/tensorflow) 
+#项目中的include路径
+include_directories(${TENSORFLOW_DIR})
+include_directories(${TENSORFLOW_DIR}/tensorflow/contrib/makefile/gen/proto)
+include_directories(${TENSORFLOW_DIR}/tensorflow/contrib/makefile/gen/protobuf-host/include)
+include_directories(${TENSORFLOW_DIR}/tensorflow/contrib/makefile/downloads/eigen)
+include_directories(${TENSORFLOW_DIR}/tensorflow/contrib/makefile/downloads/nsync/public)
+
+#项目中lib路径
+link_directories(${TENSORFLOW_DIR}/tensorflow/contrib/makefile/gen/lib)
+link_directories(${TENSORFLOW_DIR}/tensorflow/contrib/makefile/gen/protobuf-host/lib)
+link_directories(${TENSORFLOW_DIR}/tensorflow/contrib/makefile/downloads/nsync/builds/default.linux.c++11)
+link_directories(${TENSORFLOW_DIR}/bazel-bin/tensorflow)
+
+add_executable(demo main.cpp)
+#连接libtensorflow_cc.so和libtensorflow_framework库。
+target_link_libraries(demo tensorflow_cc tensorflow_framework)
+```
+
+* cmake编译
+注意这里要使用cmake 3.1以上的版本，我使用了3.9版本
+```cpp
+#使用cmake构建生成make文件
+cmake .
+#使用make编译
+make
+#运行可执行文件
+./demo
+```
+
+* cmake 升级
+```cpp
+wget https://cmake.org/files/v3.9/cmake-3.9.2.tar.gz
+gunzip cmake-3.9.2.tar.gz
+tar xvf cmake-3.9.2.tar
+cd cmake-3.9.2
+./configure
+sudo make 
+sudo make install
+
+// 【注】安装完后，执行cmake --version会报如下错误
+// CMake Error: Could not find CMAKE_ROOT !!!
+// CMake has most likely not been installed correctly.
+// Modules directory not found in
+// /Applications/CMake 2.8-11.app/Contents/bin
+// CMake Error: Error executing cmake::LoadCache(). Aborting.
+
+// 【解决方法】
+
+// 先执行：hash -r
+
+// 然后再执行：cmake --version
+
+```
