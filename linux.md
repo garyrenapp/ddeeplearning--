@@ -157,7 +157,11 @@ zip [-r][压缩后文件名][文件或者目录]
 * control + a 然后 c  新建窗口
 * control + a 然后 x  关闭窗口
 * control + a 然后 d 退出当前screenss
-* screen -xr 5170.pts-21 当前screen attach的时候 再 attach会报错 重新attach  
+* screen -xr 5170.pts-21 当前screen attach的时候 再 attach会报错 重新attach * screen 死机
+```cpp
+ps -A | grep "screen"
+kill -9 pid
+```
 
 ### conda 
 * conda activate name  or source acitvate name 
@@ -587,14 +591,47 @@ echo "处理完成"
 * 创建分支  git branch issue55分支名字
 * 查看分支  git branch  查看本地分支
 * 查看远程分支 git branch -a
-* 切换远程分支 git checkout -b issue(本地分支名) origin/dev(远程分支名)
+* checkout 远程分支 git checkout -b issue(本地分支名) origin/dev(远程分支名)
 * push 到远程分支
 ```
 git push <远程主机名> <本地分支名>:<远程分支名>
 git push origin PSENET:fintune_dip
 ```
-* 一旦远程主机的版本库有了更新，需要将这些更新取回本地，这时就要用到git fetch命令。
+* git rm --cached tt/\*.png 删除缓存区的文件。 有时候添加了忽略文件 add 的时候 依然存在，是因为它在缓存区了 把它删了
 
+* SSH 配置
+```cpp
+//配置用户
+git config --global user.name "ss"
+git config --global user.email "a@ee.com"
+//生成密钥
+ssh-keygen -t rsa -C "humingx@yeah.net"
+//将id_rsa.pub的内容复制到github上
+cat ~/.ssh/id_rsa.pub
+// 认证输出 Agent pid 32524
+eval "$(ssh-agent -s)"
+//添加生成的 SSH key 到 ssh-agent。
+ssh-add ~/.ssh/id_rsa
+// 测试
+ssh -T git@github.com
+```
+* 已存在的文件夹或 Git 仓库
+```cpp
+cd existing_folder
+git init
+git remote add origin git@code.aliyun.com:mahuichao/test.git
+git add .
+git commit
+git push -u origin master
+```
+
+### mysql
+* mysql –uroot –hXXX.XXX.XXX.XXX –ppassword    -u -p -h 后面无空格
+* show databases;    //查看数据库列表
+* show tables;       //查看table列表
+* select * from images where id='17';
+* select * from images where id in('16','17');
+* update images set is_deal=0 where project_id in ('16','17');
 
 ### centos 编译tensorflow c++ 动态库
 
@@ -607,7 +644,8 @@ git push origin PSENET:fintune_dip
 **因为我要编译tensorflow1.10版本的c++ 需要bazel0.15的版本上述方法装的是最新版的bazel行不通** 
 * 在git上直接下载二进制文件 bazel-0.15.0-installer-linux-x86_64.sh
 * chmod +x bazel-0.15.0-installer-linux-x86_64.sh
-* ./bazel-0.15.0-installer-linux-x86_64.sh
+* ./bazel-0.15.0-installer-linux-x86_64.sh  --user
+* vim ~/.bashrc 配置bazel的环境变量
 
 #### 编译 tensorflow 源文件
 * git clone git@github.com:tensorflow/tensorflow.git
@@ -618,7 +656,8 @@ git push origin PSENET:fintune_dip
 #### 编译第三方库文件
 * cd tensorflow
 * cd tensorflow/contrib/makefile/
-* ./bulid_all_linux.sh
+* ./bulid_all_linux.sh 
+
 
 #### 使用cmake 构建程序
 ```cpp
