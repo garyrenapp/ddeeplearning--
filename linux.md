@@ -3,6 +3,20 @@ https://www.bilibili.com/video/av18156598/?p=15
 ### 管道符号 |
 用法: command 1 | command 2 他的功能是把第一个命令command 1执行的结果作为command 2的输入传给command 2，例如:
 
+### 同时结束多个进程
+* ps -ef|grep jinchengming|grep -v grep|cut -c 9-15|xargs kill -9
+管道符“|”用来隔开两个命令，管道符左边命令的输出会作为管道符右边命令的输入。下面说说用管道符联接起来的 
+几个命令： 
+* “ ps - ef”是Red Hat 里查看所有进程的命令。这时检索出的进程将作为下一条命令“grep LOCAL=NO”的输入。 
+* “grep LOCAL=NO”的输出结果是，所有含有关键字“LOCAL=NO”的进程，这是Oracle数据库中远程连接进程的共同特点。 
+* “grep -v grep”是在列出的进程中去除含有关键字“grep”的进程。 
+* “cut -c 9-15”是截取输入行的第9个字符到第15个字符，而这正好是进程号PID。 
+* “xargs kill -9”中的xargs命令是用来把前面命令的输出结果（PID）作为“kill -9”命令的参数，并执行该令。 
+* “kill -9”会强行杀掉指定进程，这样就成功清除了oracle的所有远程连接进程。其它类似的任务，只需要修改“grep LOCAL=NO”中的关键字部分就可以了。
+
+### 端口查看
+* netstat -ntlp
+
 ### ls
 * 统计当前目下的文件个数  ls -l | grep "^-" | wc -l
 * ls | head -10 显示前10个
@@ -118,8 +132,9 @@ gzip只能压缩文件，不能压缩目录,不保留原文件
 -z 解压缩
 * zip  unzip
 能保留原文件，可以压缩目录
+unzip test.zip -d /tmp
 zip [-r][压缩后文件名][文件或者目录]
-* zip -r myfile.zip .my/*
+* zip -r myfile.zip ./my/*
 * bzip2 bunzip2 [-k] 保留原文件
 
 
@@ -625,6 +640,13 @@ git commit
 git push -u origin master
 ```
 
+* 放弃本地代码直接将远程代码覆盖到本地
+```cpp
+git fetch --all
+git reset --hard origin/dev (这里master要修改为对应的分支名)
+git pull
+```
+
 ### mysql
 * mysql –uroot –hXXX.XXX.XXX.XXX –ppassword    -u -p -h 后面无空格
 * show databases;    //查看数据库列表
@@ -632,6 +654,34 @@ git push -u origin master
 * select * from images where id='17';
 * select * from images where id in('16','17');
 * update images set is_deal=0 where project_id in ('16','17');
+* 复制表数据到新表
+```cpp
+create table biao1 like biao2;
+insert into biao1 select * from biao2;
+```
+
+### nginx 
+* service nginx reload  重新加载配置
+
+### supervisor
+
+#### 安装
+```cpp
+$ sudo su - #切换为root用户
+
+# yum install epel-release
+# yum install -y supervisor
+# systemctl enable supervisord # 开机自启动
+# systemctl start supervisord # 启动supervisord服务
+
+# systemctl status supervisord # 查看supervisord服务状态
+# ps -ef|grep supervisord # 查看是否存在supervisord进程
+```
+
+#### 更新配置
+* supervisorctl update
+
+
 
 ### centos 编译tensorflow c++ 动态库
 
