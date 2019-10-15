@@ -39,7 +39,7 @@ $  | $a 以a结尾的行
 * watch -n 1 nvidia-smi 一秒显示一次gpu情况
 
 
-### cat -n  显示行号
+### cat -n  行号
 ### tac 倒序显示
 ### more 分页显示 
 * 空格或f翻页 
@@ -139,6 +139,9 @@ zip [-r][压缩后文件名][文件或者目录]
 
 
 ### vim
+* 显示行号  set number
+* 将第5到10行黏贴到第15行后面可以这么写：5,10 copy 15 这个方法适合有大量的行数情况
+* %s/foo/bar/g  {作用范围}s/{目标}/{替换}/{替换标志} g代表global
 
 ### 软件包安装
 #### rpm 离线安装
@@ -794,3 +797,13 @@ sudo make install
 // 然后再执行：cmake --version
 
 ```
+
+### linux安装 驱动 cuda cudnn
+* tensorflow推荐的ubuntu 安装方法 https://www.tensorflow.org/install/gpu
+
+因平时使用centos ，所以采用下面的安装方法
+* cuda 安装 https://docs.nvidia.com/cuda/archive/10.0/
+* cudnn 安装 https://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html#cudnn-package-manager-installation-overview
+
+
+
