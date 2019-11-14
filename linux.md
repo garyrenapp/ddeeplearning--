@@ -4,7 +4,7 @@ https://www.bilibili.com/video/av18156598/?p=15
 用法: command 1 | command 2 他的功能是把第一个命令command 1执行的结果作为command 2的输入传给command 2，例如:
 
 ### 同时结束多个进程
-* ps -ef|grep jinchengming|grep -v grep|cut -c 9-15|xargs kill -9
+* ps -ef|grep train.py|grep -v grep|cut -c 9-15|xargs kill -9
 管道符“|”用来隔开两个命令，管道符左边命令的输出会作为管道符右边命令的输入。下面说说用管道符联接起来的 
 几个命令： 
 * “ ps - ef”是Red Hat 里查看所有进程的命令。这时检索出的进程将作为下一条命令“grep LOCAL=NO”的输入。 
@@ -142,6 +142,7 @@ zip [-r][压缩后文件名][文件或者目录]
 * 显示行号  set number
 * 将第5到10行黏贴到第15行后面可以这么写：5,10 copy 15 这个方法适合有大量的行数情况
 * %s/foo/bar/g  {作用范围}s/{目标}/{替换}/{替换标志} g代表global
+* 单行复制 yy复制 p粘贴
 
 ### 软件包安装
 #### rpm 离线安装
