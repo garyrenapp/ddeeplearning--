@@ -5,6 +5,17 @@ Separable Convolution就是降低卷积运算参数量的一种典型方法。
 ![](imgs/conv-std.jpg)
 此时，卷积层共4个Filter，每个Filter包含了3个Kernel，每个Kernel的大小为3×3。因此卷积层的参数数量可以用如下公式来计算：**N_std = 4 × 3 × 3 × 3 = 108**
 
+### 再引深一下,convolution 的详细计算过程
+![](imgs/im2col.jpg)
+* 假设input 为 HxWxC(ip)，经过KxK 卷积 后为HxWxC(op) ，filter矩阵是 KxKxC(ip)xC(op)
+* 比如3*3卷积核在图像上移动，如果做for循环那么操作极其的慢，
+需要im2col加速卷积,Image的featrue matrix即(HxW)x(KxKxC(ip)). 每个channel 取KxK的小区域平铺。filter matrix 即(KxKxC(ip))xC(op) . 做一个矩阵乘法变成(HxWxC(op))).
+
+### 托普利兹矩阵
+![](imgs/Toeplitz.png)
+
+
+
 ## Separable Convolution
 Separable Convolution在Google的Xception以及MobileNet论文中均有描述。它的核心思想是将一个完整的卷积运算分解为两步进行，分别为Depthwise Convolution与Pointwise Convolution。
 

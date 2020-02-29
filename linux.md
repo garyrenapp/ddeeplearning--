@@ -111,6 +111,9 @@ ohter 去掉读权限
 * grep -v # /etc/inittab 去除包含#的行
 * grep -v ^# /etc/inittab 去掉以#开头的行
 
+### du 查看文件夹占用磁盘空间大小
+* du -h --max-depth=1 /usr/local/
+
 ### man 帮助命令
 man [命令或配置文件]
 
@@ -663,6 +666,18 @@ git pull
 create table biao1 like biao2;
 insert into biao1 select * from biao2;
 ```
+* update table1 set path = replace(path , 'abc','efg') 把path列中'abc'替换为'efg'
+* 显示行号
+```cpp
+select  @row:=@row+1 as row ,
+		images_qingxi.* 
+		 from   images_qingxi , (select @row:=0) t
+		 where  project_id = 4
+```
+* 插入 INSERT INTO table_name ( field1, field2,...fieldN )
+                       VALUES
+                       ( value1, value2,...valueN );
+                
 
 ### nginx 
 * service nginx reload  重新加载配置
@@ -803,8 +818,20 @@ sudo make install
 * tensorflow推荐的ubuntu 安装方法 https://www.tensorflow.org/install/gpu
 
 因平时使用centos ，所以采用下面的安装方法
+* 驱动安装 410
+https://www.nvidia.com/Download/Find.aspx?lang=en-us
+
 * cuda 安装 https://docs.nvidia.com/cuda/archive/10.0/
+1.具体rpm包可以在这里查看：https://developer.download.nvidia.cn/compute/cuda/repos/rhel7/x86_64  
+2.yum install cuda 的时候，我需要cuda 10.0 但是装的是10.2 ，使用 yum search cuda
+找到可用的cuda包，根据名字找到指定的10.0版本
+**注意 这种方法安装的时候会更新驱动 装个cuda10 驱动都升级到430了
+还是老老实实从官网下载安装包吧 https://developer.nvidia.com/cuda-toolkit-archive
+
 * cudnn 安装 https://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html#cudnn-package-manager-installation-overview
+老老实实下载文件拷贝吧
+
+总结：centos 就下载各个包 逐个安装吧
 
 
-
+https://gist.github.com/Mahedi-61/e0625c8782426168e436fb98417ef209

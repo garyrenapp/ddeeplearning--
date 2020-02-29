@@ -323,3 +323,18 @@ def unpickle_keypoints(array):
         descriptors.append(temp_descriptor)
     return keypoints, np.array(descriptors)
 ```
+
+## io 
+```
+import numpy as np 
+import cv2 
+import io 
+#将图片写入io
+img = np.ones((100,100),np.uint8)
+is_sucess,buffer = cv2.imencode('.jpg',img)
+io_buf = io.BytesIO(buffer)
+
+#从io获取图片
+decode_img = cv2.imdecode(np.frombuffer(io_buf.getbuffer(),np.uint8),-1)
+
+```
