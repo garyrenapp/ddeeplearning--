@@ -169,10 +169,18 @@ def warpAffine_Padded(src_h,src_w,M,mode='matrix'):
 ## laplacian
 ![](imgs/edge-3.jpg)
 
-https://zhuanlan.zhihu.com/p/32269942
 
+
+# 平滑
+## 均值
+### 代码实现
+https://medium.com/@akumar5/computer-vision-gaussian-filter-from-scratch-b485837b6e09
+## 中值
+## 高斯
 
 # 图像颜色空间
+https://zhuanlan.zhihu.com/p/32269942
+
 ## RGB
 ```python
 '''

@@ -1,3 +1,6 @@
+https://blog.csdn.net/hancoder/article/details/87994678
+
+YOLOV1 LOSS https://github.com/xiongzihua/pytorch-YOLO-v1/blob/master/yoloLoss.py
 ## YOLO V1
 **Refrence**
 
@@ -136,7 +139,7 @@ YOLOv2的训练主要包括三个阶段。
 
 ## YOLOV3
 https://mp.weixin.qq.com/s/4L9E4WGSh0hzlD303036bQ
-注意yolov3 anchor中心点 不是网格中心点了， 是网格左上角
+
 同时每一个bounding box预测5个坐值，分别为 tx,ty,tw,th,to ，其中前四个是坐标，to是置信度。如果这个cell距离图像左上角的边距为 (cx,cy)(cx,cy) 以及该cell对应box（bounding box prior）的长和宽分别为 (pw,ph)(pw,ph)，那么预测值可以表示为
 ![](imgs/yolo3-1.jpg)
 ![](imgs/yolo3-2.jpg)
@@ -155,3 +158,25 @@ more than some threshold we ignore the prediction, following [17]. We use the th
 only assigns one bounding box prior for each ground truth
 object. If a bounding box prior is not assigned to a ground
 truth object it incurs no loss for coordinate or class predictions, only objectness.
+
+
+
+###
+v1:
+* 7x7 网格，全联接，直接不借助anchor直接做回归。每个网格预测两个框，每个网格预测一个物体，算的是 物体的中心点 相对于网格左上角的偏移量。x，y。宽高是相对图像的大小。
+* loss计算 有对象的x,y,w,h 。有对象的网格少 加一个系数论文是5。置信度 有对象的置信度和无对象的置信度，毕竟无对象的网格多，无对象的置信度加一个系数0.5。分类损失 有对象的分类损失。
+* 缺点 不能预测小物体，因为7x7网格。不能预测相近或者重叠物体。因为一个网格只能预测一个物体
+
+v2:
+* 加入anchor，采用聚类的方式得出anchor，毕竟借助anchor比直接回归的方式更容易训练。anchor的话 物体中心点的预测还是 相对于网格左上角。 宽 高 相对于anchor。
+
+* 全联接去掉了，用了darknet19.加入BN
+* 多尺度训练
+* pass through 加强处理小目标的能力。将倒数第二层26x26，变成13*13.
+
+v3:
+* darknet 53.
+* 类fpn 三个特征层输出
+* 残差结构
+* 还有loss 上的改变。 v1中提到 计算坐标损失和 无对象置信度损失的时候 加了系数， 目的是为了平衡正负样本对loss的印象。现在对 无对象对置信度损失 是加了一个 忽略mask，计算预测对iou和真实iou对比值，如果iou大于0.5 忽略。所以不需要在用系数。但是坐标损失对计算有一个系数 2- (物体w*物体h)/(图片w*图片h) ，这样对小物体系数更高一些。
+
