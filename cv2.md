@@ -37,9 +37,10 @@ plt.imshow(img_2)
 ## 像素坐标矩阵变换
 ### 平移
 $$
-x = x_{0} + ax \\
+x = x_{0} + ax ；
 y = y_{0} + ay
 $$
+
 $$
 \begin{bmatrix}
     x\\
@@ -60,11 +61,12 @@ $$
 
 ### 旋转
 ![](imgs/rotate1.png)
-$$
+$$\begin{aligned}
 x_{0} = r\cos\alpha\\
 y_{0} = r\sin\alpha\\
 x = r\cos(\alpha+\theta) = r\cos\alpha \cos\theta - r\sin\alpha sin\theta = x_{0}\cos\theta - y_{0}\sin\theta\\
 y = r\sin(\alpha + \theta) = r\sin\alpha \cos\theta + r\cos\alpha\sin\theta = y_{0}\cos\theta + x_{0}\sin\theta
+\end{aligned}
 $$
 $$
 \begin{bmatrix}
@@ -86,7 +88,7 @@ $$
 
 ### 缩放
 $$
-x = k1 * x_{0}\\
+x = k1 * x_{0};
 y = k2 * y_{0}
 $$
 $$

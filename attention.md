@@ -24,12 +24,57 @@ $\hat{y}$是rnn后的操作，比如你要做分类等等。
 * rnn的输出，在pytorch中输出h_n 和ouput
 h_n指rnn的最后一个输出，output指所有timestep的输出，tensorflow也类似。注意output并不是$\hat{y}$
 
+https://www.bilibili.com/video/av18262110?from=search&seid=16930771410284656948
+这个视频讲lstm和gru不错,先讲gru再讲lstm更容易理解
+## gru
+![](imgs/gru.png)
+$$
+\begin{aligned}
+\boldsymbol{R}_t = \sigma(\boldsymbol{X}_t \boldsymbol{W}_{xr} + \boldsymbol{H}_{t-1} \boldsymbol{W}_{hr} + \boldsymbol{b}_r),\\
+\boldsymbol{Z}_t = \sigma(\boldsymbol{X}_t \boldsymbol{W}_{xz} + \boldsymbol{H}_{t-1} \boldsymbol{W}_{hz} + \boldsymbol{b}_z),\\
+\tilde{\boldsymbol{H}}_t = \text{tanh}(\boldsymbol{X}_t \boldsymbol{W}_{xh} + \left(\boldsymbol{R}_t \odot \boldsymbol{H}_{t-1}\right) \boldsymbol{W}_{hh} + \boldsymbol{b}_h),\\
+\boldsymbol{H}_t = \boldsymbol{Z}_t \odot \boldsymbol{H}_{t-1}  + (1 - \boldsymbol{Z}_t) \odot \tilde{\boldsymbol{H}}_t.
+\end{aligned}
+$$
+
+* $z_{t} 重置门$
+* $r_{t} 更新门$
+* 这两个门没什么花里胡哨的，都是用$\boldsymbol{X}_t\boldsymbol{H}_{t-1}$参与计算
+
+* $\hat{h}_{t} 候选隐藏状态$ 它通过更新门来决定上一个时刻的隐藏状态哪些需要更新
+* $\hat{h}_{t} 最终参与计算的隐藏状态$ 前半部分$1-z_{t}$决定来哪些需要丢弃，后半部分决定哪些需要更新
+* 重置门有助于捕捉时间序列里短期的依赖关系；因为它是丢弃
+* 更新门有助于捕捉时间序列里长期的依赖关系。因为它是保留
+## lstm 
+长短期记忆（Long short-term memory, LSTM）是一种特殊的RNN，主要是为了解决长序列训练过程中的梯度消失和梯度爆炸问题。简单来说，就是相比普通的RNN，LSTM能够在更长的序列中有更好的表现。
+![](imgs/lstm.png)
+$$
+\begin{aligned}
+输入门-\boldsymbol{I}_t &= \sigma(\boldsymbol{X}_t \boldsymbol{W}_{xi} + \boldsymbol{H}_{t-1} \boldsymbol{W}_{hi} + \boldsymbol{b}_i),\\
+遗忘门-\boldsymbol{F}_t &= \sigma(\boldsymbol{X}_t \boldsymbol{W}_{xf} + \boldsymbol{H}_{t-1} \boldsymbol{W}_{hf} + \boldsymbol{b}_f),\\
+输出门-\boldsymbol{O}_t &= \sigma(\boldsymbol{X}_t \boldsymbol{W}_{xo} + \boldsymbol{H}_{t-1} \boldsymbol{W}_{ho} + \boldsymbol{b}_o),
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+候选记忆细胞 - \tilde{\boldsymbol{C}}_t = \text{tanh}(\boldsymbol{X}_t \boldsymbol{W}_{xc} + \boldsymbol{H}_{t-1} \boldsymbol{W}_{hc} + \boldsymbol{b}_c),\\
+记忆细胞-\boldsymbol{C}_t = \boldsymbol{F}_t \odot \boldsymbol{C}_{t-1} + \boldsymbol{I}_t \odot \tilde{\boldsymbol{C}}_t.\\
+隐藏状态 - \boldsymbol{H}_t = \boldsymbol{O}_t \odot \text{tanh}(\boldsymbol{C}_t).
+\end{aligned}
+$$
+* 和gru 差不多，只是多了一个输出门 ， 如果我们把输出门和隐藏状态这两个去掉和gru是一样多。但是这两个有什么用呢，隐藏状态有一个输出门来控制，这个决定多记忆细胞是不是要用或者不用，但是记忆细胞是保留多，它可能在当前没用，在以后会有用
+
+
 
 
 https://www.yiyibooks.cn/yiyibooks/Effective_Approaches_to_Attention_Based_Neural_Machine_Translation/index.html
 
 ## attention要解决的问题
 https://www.jianshu.com/p/c94909b835d6
+encoder-decoder最大的缺点是，encoder接收了不管多长的语句，最后输出的只是最后一个vector，当语句很长时，这个vector能否有效地表示该语句是很值得怀疑的。
+如何解决这个问题呢？我们很自然会想到，第一个RNN其实在中间会产生很多输出，这些输出都被我们抛弃了，我们只用了最后的一个。如果能利用上中间的输出，兴许可以解决问题。Attention正是利用上了这些中间的输出。
+
 
 
 ## bahdanua

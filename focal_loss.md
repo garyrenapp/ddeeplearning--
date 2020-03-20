@@ -5,7 +5,9 @@
 https://zhuanlan.zhihu.com/p/49981234
 https://skyhigh233.com/blog/2018/04/04/focalloss/
 ## focal_ctc_loss
+![](./imgs/focalloss.jpg)
 ![](./imgs/focal_ctc_loss.jpg)
+
 参考论文 Focal CTC Loss for Chinese Optical Character Recognition on Unbalanced Datasets
 ```python
 def ctc_lambda_func(args):
