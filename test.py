@@ -1,2 +1,3 @@
-a = [] 
-print(a == None )
+a =[]
+print(a)
+a = non
