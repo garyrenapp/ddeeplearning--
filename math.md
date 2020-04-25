@@ -24,7 +24,7 @@ $$
 ![](imgs/mle-1.png)
 极大似然估计中采样需满足一个重要的假设，就是所有的采样都是独立同分布的。
 **似然函数**$L(\theta) = L(x_{1},x_{2},....,x_{n};\theta) = \prod_{i=1}^{n}f(x_{i}；\theta) $ 其中$\prod$是连乘的意思
-**最大似然估计值**即最大化似然函数 $L(x_{1},x_{2},....,x_{n};\hat{\theta}) = \max_{\theta\epsilon\Theta}L(x_{1},x_{2},....,x_{n};\theta) 则\hat{\theta}是最大似然估计值$
+**最大似然估计值**即最大化似然函数 $ L(x_{1},x_{2},....,x_{n};\hat{\theta}) = \max_{\theta\epsilon\Theta}L(x_{1},x_{2},....,x_{n};\theta) 则\hat{\theta}是最大似然估计值 $
 
 求极大似然函数估计值的一般步骤：
 1. 写出似然函数；
