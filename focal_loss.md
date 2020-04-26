@@ -2,6 +2,9 @@
 
 ### $\alpha$系数怎么影响多分类多呢
 ### 要解决什么问题
+
+目的是通过减少易分类样本的权重，从而使得模型在训练时更专注于难分类的样本。
+
 https://zhuanlan.zhihu.com/p/49981234
 https://skyhigh233.com/blog/2018/04/04/focalloss/
 ## focal_ctc_loss

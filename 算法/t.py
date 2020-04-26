@@ -30,7 +30,6 @@ class Quick:
         #右半排序
         cls.sort(arr,gt+1,hi)
         
-        
 
 
 # %%
