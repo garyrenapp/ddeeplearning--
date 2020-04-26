@@ -42,7 +42,7 @@ $$
 * 这两个门没什么花里胡哨的，都是用$\boldsymbol{X}_t\boldsymbol{H}_{t-1}$参与计算
 
 * $\hat{h}_{t} 候选隐藏状态$ 它通过更新门来决定上一个时刻的隐藏状态哪些需要更新
-* $\hat{h}_{t} 最终参与计算的隐藏状态$ 前半部分$1-z_{t}$决定来哪些需要丢弃，后半部分决定哪些需要更新
+* $\hat{h}_{t} 最终参与计算的隐藏状态$ 前半部分$z_{t}$决定来哪些需要丢弃，后半部分决定哪些需要更新
 * 重置门有助于捕捉时间序列里短期的依赖关系；因为它是丢弃
 * 更新门有助于捕捉时间序列里长期的依赖关系。因为它是保留
 ## lstm 
@@ -104,6 +104,62 @@ socre 就是
 ## 穷举搜索
 ## beam search(束搜索)
 转seq2seq.md 看
+
+https://blog.csdn.net/u014514939/article/details/95667422
+https://github.com/budzianowski/PyTorch-Beam-Search-Decoding/blob/master/decode_beam.py
+https://github.com/ottokart/beam_search/blob/master/beam_search.py
+```python
+class Node(object):
+    def __init__(self, hidden, previous_node, decoder_input, attn, log_prob, length):
+        self.hidden = hidden
+        self.previous_node = previous_node
+        self.decoder_input = decoder_input
+        self.attn = attn
+        self.log_prob = log_prob
+        self.length = length        
+
+
+def beam_search(beam_width):
+    ...
+    root = Node(hidden, None, decoder_input, None, 0, 1)
+    q = Queue()
+    q.put(root)
+    
+    end_nodes = [] #最终节点的位置，用于回溯
+    while not q.empty():
+        candidates = []  #每一层的可能被拓展的节点，只需选取每个父节点的儿子节点中概率最大的k个即可
+    
+        for _ in range(q.qsize()):
+            node = q.get()
+            decoder_input = node.decoder_input
+            hidden = node.hidden
+            
+            # 搜索终止条件
+            if decoder_input.item() == EOS or node.length >= 50:
+                end_nodes.append(node)
+                continue
+              
+            log_prob, hidden, attn = decoder(
+                 decoder_input, hidden, encoder_input
+             )
+             
+             log_prob, indices = log_prob.topk(beam_width) #选取某个父节点的儿子节点概率最大的k个
+             
+             for k in range(beam_width):
+                  index = indices[k].unsqueeze(0)
+                  log_p = log_prob[k].item()
+                  child = Node(hidden, node, index, attn, node.log_prob + log_p, node.length + 1)
+                  candidates.append((node.log_prob + log_p, child))  #建立候选儿子节点，注意这里概率需要累计
+           
+         candidates = sorted(candidates, key=lambda x:x[0], reverse=True) #候选节点排序
+         length = min(len(candidates), beam_width)  #取前k个，如果不足k个，则全部入选
+         for i in range(length):
+             q.put(candidates[i][1])  
+
+    # 后面是回溯, 省略
+    ...
+
+```
 ## 评价指标
 ### blue
 评价机器翻译结果通常使用BLEU（Bilingual Evaluation Understudy）[1]。对于模型预测序列中任意的子序列，BLEU考察这个子序列是否出现在标签序列中。
@@ -134,3 +190,5 @@ def bleu(pred_tokens, label_tokens, k):
 ```
 
 ### 困惑度(Perplexity)
+
+https://pytorch.org/tutorials/beginner/chatbot_tutorial.html
