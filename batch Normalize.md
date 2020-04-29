@@ -93,3 +93,6 @@ array([-0.58043486, -0.57812006,  1.73204539, -0.57349047])
 >>> b.std()
 1.0
 ```
+
+TensorFlow 2.0+Keras bn的坑
+https://zhuanlan.zhihu.com/p/64310188

@@ -192,3 +192,8 @@ def bleu(pred_tokens, label_tokens, k):
 ### 困惑度(Perplexity)
 
 https://pytorch.org/tutorials/beginner/chatbot_tutorial.html
+
+
+
+
+https://blog.keras.io/a-ten-minute-introduction-to-sequence-to-sequence-learning-in-keras.html
