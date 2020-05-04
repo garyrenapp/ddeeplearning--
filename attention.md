@@ -108,6 +108,7 @@ socre 就是
 https://blog.csdn.net/u014514939/article/details/95667422
 https://github.com/budzianowski/PyTorch-Beam-Search-Decoding/blob/master/decode_beam.py
 https://github.com/ottokart/beam_search/blob/master/beam_search.py
+https://github.com/vahidk/EffectiveTensorflow#beam_search
 ```python
 class Node(object):
     def __init__(self, hidden, previous_node, decoder_input, attn, log_prob, length):
