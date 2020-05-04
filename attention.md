@@ -197,3 +197,4 @@ https://pytorch.org/tutorials/beginner/chatbot_tutorial.html
 
 
 https://blog.keras.io/a-ten-minute-introduction-to-sequence-to-sequence-learning-in-keras.html
+https://www.bilibili.com/video/BV1qx41197mh?from=search&seid=10980733662144393179
