@@ -76,7 +76,7 @@ encoder-decoder最大的缺点是，encoder接收了不管多长的语句，最�
 如何解决这个问题呢？我们很自然会想到，第一个RNN其实在中间会产生很多输出，这些输出都被我们抛弃了，我们只用了最后的一个。如果能利用上中间的输出，兴许可以解决问题。Attention正是利用上了这些中间的输出。
 
 
-
+https://github.com/spro/practical-pytorch/blob/master/seq2seq-translation/seq2seq-translation-batched.ipynb
 ## bahdanua
 https://www.tensorflow.org/tutorials/text/nmt_with_attention
 ![](./imgs/attention4.jpg)
@@ -85,7 +85,7 @@ $$ score_{alignment} = W_{combined} \cdot tanh(W_{decoder} \cdot H_{decoder} + W
 * $H_{decoder}$的第一次是取$H_{encoder}的最后一个隐含状态$
 * query 是 decoder
 * valude 是 encode 的输出
-
+![](../imgs/../ddeeplearning--/imgs/att2.jpg)
 ## luong
 与[Bahdanau et al. 2015]的比较 — 尽管我们的全局 attention 方式在本质上类似于Bahdanau et al. 2015提出的模型，有几个关键差异反映了我们如何从原始模型中进行简化和泛化。 **首先，我们只需在编码器和解码器的顶层LSTM层使用隐藏状态**  而Bahdanau et al. 2015 将双向编码器中将前向和后向源隐藏状态和非堆叠的单向解码器中的目标隐藏状态连接起来。 **其次，我们的计算路径更简单：我们从ht →at →ct →˜ht，然后进行预测，等式(5)、等式(6)和图2有详细解释。 然而，在任何时刻t，Bahdanau et al. 2015 从前一个隐藏状态构建 ht-1 →at →ct →ht，然后再预测之前再添加一个deep-output 和一个 maxout 层**。 **最后，Bahdanau et al. 2015 只使用一个对齐函数concat 积进行了实验；而我们显示其他方法更好。**
 ![](./imgs/attention3.png)
@@ -98,6 +98,7 @@ socre 就是
 ## tick
 * teacher_forcing 可以快速收敛，副作用是解码器没有足够的机会遇到真实的编码输出，导致模型不稳定，
 因此需要设置概率teacher_forcing_ratio
+https://zhuanlan.zhihu.com/p/93030328
 * gradient clip 防止梯度爆炸
 
 ## 贪婪搜索
