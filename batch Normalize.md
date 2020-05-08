@@ -94,5 +94,27 @@ array([-0.58043486, -0.57812006,  1.73204539, -0.57349047])
 1.0
 ```
 
+
+### tf2的bn层
 TensorFlow 2.0+Keras bn的坑
 https://zhuanlan.zhihu.com/p/64310188
+
+```python
+tf.keras.layers.BatchNormalization(
+   trainable=True)(....,training)
+```
+* 这个是个大坑啊，超级大的坑，在tf2.0 和 1.x 中行为是不一样的https://github.com/tensorflow/tensorflow/blob/r2.1/tensorflow/python/keras/layers/normalization_v2.py
+
+* 参见上面连接的说明，大概意思是 本来哈 trainable参数是控制可学习的参数是否更新的，就是冻结的意思，training参数切换训练模式和接口模式。
+
+* However, in the case of the `BatchNormalization` layer, **setting
+  `trainable = False` on the layer means that the layer will be
+  subsequently run in inference mode** (meaning that it will use
+  the moving mean and the moving variance to normalize the current batch,
+  rather than using the mean and variance of the current batch). 但是 BN 层就不一样了，设置了trainable 就是以接口模式运行了。 这里要说一下BN层训练模式和接口模式的过程。训练模式的时候 是计算当前batch的计算mean var。接口模式的时候不计算mean var 而是用训练的mean var 过归一化的。
+
+* 事实上这一点很容易迷糊。比如我们fintinue的时候 冻结了前面的bn层即trainable=false，我们希望的是以现有的mean var直接计算，而不是用当前batch重新计算mean var然后归一化。也就是说我们对bn层的期望是我们冻结了它就让他转向接口模式，但是这个在1.*中是个坑，现在2.0改回来了，是个好事
+* If the value of the `trainable`
+      attribute is changed after calling `compile()` on a model,
+      the new value doesn't take effect for this model
+      until `compile()` is called again. 这个也是容易遇到坑的地方，我们设置trainable这个行为应该是在compile之前，compile之后设置后就不生效了，除非你再次的compile。
