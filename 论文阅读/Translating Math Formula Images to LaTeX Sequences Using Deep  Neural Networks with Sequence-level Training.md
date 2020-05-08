@@ -1,6 +1,7 @@
 
 ## 数学公式识别
-
+### 数据集
+http://lstm.seas.harvard.edu/latex/data/
 ### 前言
 * 说一些自己的理解：结构上没有创新，唯一的一点是加入了2d 位置编码。在decoder阶段 使用了双层单向的lstm。
 
@@ -31,3 +32,19 @@ encoder : cnn_dim = 512
 attention : units = 256
 
 decoder : hidden_dim = 512 
+
+$
+[ J _ { m n } , J _ { p q } ] = i ( \delta _ { q [ m } J _ { n ] p } - \delta _ { p [ m } J _ { n ] q } )
+$
+
+$
+e ^ { \tilde { \mathcal K } / 2 }
+$
+$
+e ^ { \tilde { K } / 2 }
+$
+
+$
+[ J _ { m n } , J _ { p q } ] = i ( \delta _ { q [ m } J _ { n ] } - \delta _ { p [ m } J _ { n ] } )
+$
+
