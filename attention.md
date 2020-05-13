@@ -111,6 +111,7 @@ https://github.com/budzianowski/PyTorch-Beam-Search-Decoding/blob/master/decode_
 https://github.com/ottokart/beam_search/blob/master/beam_search.py
 https://github.com/vahidk/EffectiveTensorflow#beam_search
 https://github.com/allenai/allennlp/blob/master/allennlp/nn/beam_search.py
+https://github.com/tensorflow/addons/blob/v0.9.1/tensorflow_addons/seq2seq/beam_search_decoder.py#L613-L817
 ```python
 class Node(object):
     def __init__(self, hidden, previous_node, decoder_input, attn, log_prob, length):

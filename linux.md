@@ -654,6 +654,67 @@ git reset --hard origin/dev (这里master要修改为对应的分支名)
 git pull
 ```
 
+* 多账户
+```
+cd ~/.ssh
+分别为user1和user2生成密钥对：
+默认三次回车生成key的名字为id_rsa，注意在生成第二个的时候不要使用默认名，否则会覆盖第一个，在以下位置为第二个输入名字
+#新建SSH key
+$ ssh-keygen -t rsa -C "user1@163.com"
+$ ssh-keygen -t rsa -C "user2@163.com"
+设置user2的命名为id_rsa_work 
+Enter file in which to save the key (/c/Users/Administrator/.ssh/id_rsa): id_rsa_work
+此时在.ssh目录下就有两个密钥对文件id_rsa和id_rsa_work,我们将公钥分别拷至对应的Git服务器
+
+添加key到SSH agent中:
+此时还无法使用第二个服务器，因为Git会默认只读取到id_rsa,为了让SSH识别新的私钥，需将其添加到SSH agent中：
+$ ssh-add ~/.ssh/id_rsa
+$ ssh-add ~/.ssh/id_rsa_work
+如果出现Could not open a connection to your authentication agent的错误，就试着用以下命令：
+
+$ ssh-agent bash
+$ ssh-add ~/.ssh/id_rsa
+$ ssh-add ~/.ssh/id_rsa_work
+成功会显示：
+
+Identity added: /c/Users/Windows用户名/.ssh/key名 (/c/Users/Windows用户名/.ssh/key名)
+注意：ssh-add 这个命令不是用来永久性的记住你所使用的私钥的。实际上，它的作用只是把你指定的私钥添加到 ssh-agent 所管理的一个 session 当中。而 ssh-agent 是一个用于存储私钥的临时性的 session 服务，也就是说当你重启之后，ssh-agent 服务也就重置了。
+
+创建并配置config文件使配置永久生效：
+在.ssh目录下新建一个文本文件，命令为config，不需要后缀，bash下可直接使用touch config,编辑以下内容：
+    # gitlab
+    Host gitlab的IP
+        HostName gitlab的Host     //这里填你们公司的git网址即可
+        PreferredAuthentications publickey
+        IdentityFile ~/.ssh/id_rsa_work
+        User user2
+    # github
+    Host github.com
+        HostName github.com
+        PreferredAuthentications publickey
+        IdentityFile ~/.ssh/id_rsa
+        User user1
+其规则就是：从上至下读取config的内容，在每个Host下寻找对应的私钥。按照你的情况修改就可以。
+
+使用：如果之前有设置全局用户名和邮箱的话，需要unset一下，可通过$ git config --list来查看全局配置
+$ git config --global --unset user.name
+$ git config --global --unset user.email
+可以在不同的仓库下设置局部的用户名和邮箱用不同的账号登录，比如在公司的repository下:
+
+$ git config user.name "user2"  
+$ git config user.email "user2@163.com"
+测试：
+$ ssh -T git@github.com
+#输出：Hi user1! You've successfully authenticated, but GitHub does not provide shell access.
+$ ssh -T git@gitlab的IP
+#输出：Hi user2@163.com**, this is git@.....
+测试成功。
+如果出什么问题，可以通过ssh -vT git@github.com来输出编译信息，然后根据编译信息去解决问题
+Bad owner or permissions on /***/.ssh/config
+chmod 600 config
+
+```
+
 ### mysql
 * mysql –uroot –hXXX.XXX.XXX.XXX –ppassword    -u -p -h 后面无空格
 * show databases;    //查看数据库列表
