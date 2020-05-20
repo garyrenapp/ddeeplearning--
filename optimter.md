@@ -38,3 +38,7 @@ while True:
 
 Adam[6] 可以认为是 RMSprop 和 Momentum 的结合。和 RMSprop 对二阶动量使用指数移动平均类似，Adam 中对一阶动量也是用指数移动平均计算。Adam[6] 可以认为是 RMSprop 和 Momentum 的结合。和 RMSprop 对二阶动量使用指数移动平均类似，Adam 中对一阶动量也是用指数移动平均计算。
 ![](imgs/adam.jpg)
+
+
+## AdamW
+https://www.zybuluo.com/sambodhi/note/1201597

@@ -29,10 +29,10 @@
 一个直观理解为什么CLR work是损失函数的拓扑结构(the loss function topology)
 Dauphin et al. 认为最小化损失的困难来自于鞍点而非局部最小值，鞍点有很小的梯度减慢了学习过程而增加学习率可以快速跳过鞍点。一个更实际的原因是最佳学习率可能在一个界限内，接近最优的学习率在整个训练过程中被使用。
 
-![](imgs/clr2.png)
+![](../imgs/clr2.png)
 上图红线是CLR策略，上下界是[base_lr =0.001, max_lr =0.006]。周期长度是4000即stepsize=2000。CLR达到相同准确度用的interation更少。
 
-![](imgs/CLR1.png)
+![](../imgs/CLR1.png)
 如上图三角周期学习率策略，蓝线代表学习率的值，stepsize 是半周期的迭代次数
 CLR的实现很简单，伪代码
 ```python
@@ -41,13 +41,13 @@ localx = math.abs(interations / stepsize − 2 ∗ cycle + 1)
 locallr = base_lr + (max_lr − base_lr) ∗ math.max(0, (1 − localx))
 ```
 用一张图来加深理解
-![](imgs/clr3.png)
+![](../imgs/clr3.png)
 
 除此之外在这篇论文中我们还讨论下面的CLR方法：
 1. triangular2：和traiangular策略不同点是每个cycle结束后max_lr减半
-![](imgs/clr4.png)
+![](../imgs/clr4.png)
 1. exp_range: 每个cycle结束后max_lr伽马指数下降。$gamma^{iteration}$
-![](imgs/clr5.png)
+![](../imgs/clr5.png)
 
 ### 如何估计一个好的 cycle length\stepsize
 这个参数可以简单的从一个epoch的迭代轮数计算得到，总样本数除以批量大小。例如CIFAR10有50000图片，批量大小100，所以一个epoch的迭代次数是500数,实验结果表明stepsize设置为2~10倍的一个epoch迭代次数比较合适。
@@ -57,14 +57,14 @@ locallr = base_lr + (max_lr − base_lr) ∗ math.max(0, (1 − localx))
 LR range test:设置一个lr的范围，让lr由小到大线性增长。接下来绘制ACC-LR的曲线，
 注意两个时刻(1.base_lr)acc开始上升的时刻 (2.max_lr)acc提升的很慢或者抖动或者开始下降。另外一个经验是最佳学习率通常在可收敛的最大学习率的两倍之内，设置base_lr = 1/3 or 1/4 max_lr.
 
-![](imgs/clr6.png)
+![](../imgs/clr6.png)
 上图所示是 8个epoch跑出来的 LR range test.
 base_lr =0.001 即Acc开始上升的位置
 max_lr =0.006 即Acc开始变慢甚至下降的位置
 
 ## 实验
 ### CIFAR 实验
-![](imgs/clr7.png)
+![](../imgs/clr7.png)
 one epoch = 500 iterations.
 * base_lr=0.001 max_lr=0.005, stepsize=2000 one cycle =2*stepsize =4000,[0,16000]次迭代即跑了4个cycle
 * 接着重新寻找学习率 stepsize =1000 ....
@@ -84,7 +84,7 @@ Table3显示CLR+一些自适应学习方法在25000次迭代就能达到自适�
 
 #### ResNets, Stochastic Depth, and DenseNets
 下面是应用于残差网络的实验
-![](imgs/clr11.png)
+![](../imgs/clr11.png)
 Table4 列出CLR 和 原论文方法的acc比较。括号是lr的范围
 实验表明CLR能得到相似或者更好的结果
 
