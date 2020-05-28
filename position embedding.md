@@ -1,3 +1,47 @@
+
+
+
+
+```python
+    def _positional_encoding_2d(self,d_model,max_h = 100,max_w = 300):
+        '''位置编码
+
+            预先计算二维位置编码,这里设定了一个很大的max_h max_w,这样无需每次重复计算，
+            每次索引取所需要的维度即可
+            notice : tensor object does not support item assignment,这里用numpy 替代
+
+            args:
+             d_model : 特征维度
+             max_h : 高度
+             max_w : 宽度
+
+            returns :
+             二维tensor
+        '''
+        if(d_model % 4 !=0):
+            raise ValueError('d_model % 4 !=0 ')
+        pe = np.zeros((max_h,max_w,d_model))
+      #print('pe shape:',pe.shape)
+        d_half_model = d_model // 2 
+
+        div_term = 1 / np.power(
+                                  10000,
+                                  np.arange(0,d_half_model,2) / d_half_model
+                                  )
+      
+        pos_w = np.arange(max_w)[:,np.newaxis]
+        #print('pos_w * div_term shape :',(pos_w * div_term).shape)
+        pe[:,:,0:d_half_model:2] = np.sin(pos_w * div_term)
+        pe[:,:,1:d_half_model:2] = np.cos(pos_w * div_term)
+        pos_h = np.arange(max_h)[:,np.newaxis,np.newaxis]
+        #print('pos_h * div_term shape :',(pos_h * div_term).shape)
+        pe[:,:,d_half_model::2] = np.sin(pos_h * div_term)
+        pe[:,:,d_half_model+1::2] = np.cos(pos_h * div_term)
+
+        return tf.cast(pe,dtype=tf.float32)
+ 
+```
+
 ```python
 from .backend import keras
 from .backend import backend as K
