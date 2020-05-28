@@ -93,16 +93,16 @@ $$ score_{alignment} = W_{combined} \cdot tanh(W_{decoder} \cdot H_{decoder} + W
 ![](./imgs/attention6.jpg)
 
 ## attention的可视化
-socre 就是
+略
 ## mask loss 
+略
 ## tick
-* teacher_forcing 可以快速收敛，副作用是解码器没有足够的机会遇到真实的编码输出，导致模型不稳定，
-因此需要设置概率teacher_forcing_ratio
-https://zhuanlan.zhihu.com/p/93030328
+* teacher_forcing 可以快速收敛，副作用是解码器没有足够的机会遇到真实的编码输出,导致推理阶段效果很差，gap问题
+* scheduled sampling 设定一个计划从大到小逐渐减少 teacher_forcing_ratio
+
 * gradient clip 防止梯度爆炸
 
 ## 贪婪搜索
-## 穷举搜索
 ## beam search(束搜索)
 转seq2seq.md 看
 
@@ -202,3 +202,16 @@ https://pytorch.org/tutorials/beginner/chatbot_tutorial.html
 
 https://blog.keras.io/a-ten-minute-introduction-to-sequence-to-sequence-learning-in-keras.html
 https://www.bilibili.com/video/BV1qx41197mh?from=search&seid=10980733662144393179
+
+
+
+## hard \ soft attention
+
+## global \ local attention
+
+*  global attention ：计算context vecotr 考虑 encoder的全部输出
+
+![](./imgs/global-attention.jpg)
+
+* local attention : 计算context vector 局限在部分区域
+![](./imgs/local%20attention.jpg)
