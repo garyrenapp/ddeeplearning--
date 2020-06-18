@@ -48,3 +48,9 @@ $
 [ J _ { m n } , J _ { p q } ] = i ( \delta _ { q [ m } J _ { n ] } - \delta _ { p [ m } J _ { n ] } )
 $
 
+
+https://github.com/jungomi/math-formula-recognition
+ Multi-Scale Attention with Dense Encoder for Handwritten Mathematical Expression Recognition.
+
+
+ dropout(state_e , state_o) ? 
