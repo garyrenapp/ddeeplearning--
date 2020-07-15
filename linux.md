@@ -888,7 +888,7 @@ https://www.nvidia.com/Download/Find.aspx?lang=en-us
 找到可用的cuda包，根据名字找到指定的10.0版本
 **注意 这种方法安装的时候会更新驱动 装个cuda10 驱动都升级到430了
 还是老老实实从官网下载安装包吧 https://developer.nvidia.com/cuda-toolkit-archive
-
+3. ./cuda_10.1.105_418.39_linux.run --silent --toolkit --toolkitpath=/data/cuda/cuda_10.1 10.1开始不能手动选择安装路径了需要用静默安装
 * cudnn 安装 https://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html#cudnn-package-manager-installation-overview
 老老实实下载文件拷贝吧
 
