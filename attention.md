@@ -217,8 +217,14 @@ https://www.bilibili.com/video/BV1qx41197mh?from=search&seid=1098073366214439317
 
 
 ## self attention
+
 ### 《Attention Is All You Need》中解释是：向量的点积结果会很大，将softmax函数push到梯度很小的区域，scaled会缓解这种现象。怎么理解将sotfmax函数push到梯度很小区域？还有为什么scaled是维度的根号，不是其他的数？ 
 ### 为什么在其他 softmax 的应用场景，不需要做 scaled
 https://www.zhihu.com/question/339723385
+
+### layer normalization 
+
+### Mask
+
 # 遍地开花的attention
 https://www.jianshu.com/p/4d52edda1d76

@@ -48,8 +48,18 @@ $$P(AB) = P(B|A)P(A) $$
 $$P(B_{i}|A) = \frac{P(B_{i}A)}{P(A)} = \frac{P(A|B_{i})P(B_{i})}{\sum_{j=1}^{n}P(A|B_{j})P(B_{j})}$$
 ![](imgs/bayes_1.png)
 
+### 先验分布
+
+### 后验分布
+
+### KL散度(KLD)
+
+KL散度是两个概率分布P和Q差别的非对称性的度量。 KL散度是用来度量使用基于Q的分布来编码服从P的分布的样本所需的额外的平均比特数。典型情况下，P表示数据的真实分布，Q表示数据的理论分布、估计的模型分布、或P的近似分布
+
+### PCA
+
 ## 微积分
-### 拉格朗日乘子法
+## 拉格朗日乘子法
 https://www.youtube.com/watch?v=aep6lwPqm6I&list=PLSQl0a2vh4HC5feHa6Rc5c0wbRTx56nF7&index=94
 http://littleshi.cn/online/LagMul.html
 

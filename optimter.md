@@ -42,3 +42,4 @@ Adam[6] 可以认为是 RMSprop 和 Momentum 的结合。和 RMSprop 对二阶�
 
 ## AdamW
 https://www.zybuluo.com/sambodhi/note/1201597
+https://www.jiqizhixin.com/articles/2018-07-03-14
