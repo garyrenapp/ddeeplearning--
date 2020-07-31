@@ -23,6 +23,8 @@ https://www.bilibili.com/video/av18156598/?p=15
 * ls | sort | head -10 
 * ls -lt 按时间排序从近到远
 * ls -ltr 按时间排序从远到近
+* ls -R 20200707_gt  | sort | cut  -d "." -f1 >> a.out 列出20200707_gt文件夹内所有文件名并排序，再截掉后缀只保留名字 输出到a.out文件
+* ls ../20200707_gt_bak/test/ | xargs -I {} mv {} ./test
 
 ### grep 
 Linux系统中grep命令是一种强大的文本搜索工具，它能使用正则表达式搜索文本，并把匹 配的行打印出来。grep全称是Global Regular Expression Print.
