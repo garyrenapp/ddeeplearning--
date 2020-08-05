@@ -5,7 +5,8 @@
 ### 正态分布
 正态分布也称高斯分布
 $$
-f(x)=\frac{1}{\sqrt{2\pi}\sigma} \exp-\frac{(x-\mu)^2}{2\sigma^2}
+f(x)=\frac{1}{\sqrt{2\pi}\sigma} \exp-\frac{(x-\mu)^2}{2\sigma^2};其中\mu是
+均值（数据点的均值），\sigma^2是方差（数据点的方差）
 $$
 ![](imgs/正态分布.png)
 
@@ -57,6 +58,25 @@ $$P(B_{i}|A) = \frac{P(B_{i}A)}{P(A)} = \frac{P(A|B_{i})P(B_{i})}{\sum_{j=1}^{n}
 KL散度是两个概率分布P和Q差别的非对称性的度量。 KL散度是用来度量使用基于Q的分布来编码服从P的分布的样本所需的额外的平均比特数。典型情况下，P表示数据的真实分布，Q表示数据的理论分布、估计的模型分布、或P的近似分布
 
 ### PCA
+
+### SVD
+
+#### SVD 奇异值分解 --- 线性变换几何意义
+https://zhuanlan.zhihu.com/p/36546367
+http://blog.sciencenet.cn/home.php?mod=space&uid=696950&do=blog&quickforward=1&id=699380
+http://blog.sciencenet.cn/blog-696950-699432.html
+
+
+#### 公式
+
+![](../imgs/../ddeeplearning--/imgs/svd.jpg)
+![](../imgs/../ddeeplearning--/imgs/svd2.jpg)
+![](../imgs/../ddeeplearning--/imgs/svd3.jpg)
+
+### EM (Expectation-Maximization Algorithm)期望最大
+https://www.bilibili.com/video/BV1a54y1X7wM?from=search&seid=13941329756666396082
+
+http://sofasofa.io/tutorials/gmm_em/
 
 ## 微积分
 ## 拉格朗日乘子法
