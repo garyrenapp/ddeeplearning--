@@ -165,3 +165,9 @@ http://littleshi.cn/online/LagMul.html
 特征值分解是将矩阵分解为由特征值和特征向量表示的矩阵之积的方法。
 ### 奇异值分解
 
+### Forbenius norm (Forbenius 范数)
+Frobenius 范数，简称F-范数，是一种矩阵范数，记为||·||F。矩阵A的Frobenius范数定义为矩阵A各项元素的绝对值平方的总和再开方，即
+$$
+||A||_F = \sqrt{\sum_{i=1}^m\sum_{j-1}^n|a_{i,j}|^2}
+$$
+
