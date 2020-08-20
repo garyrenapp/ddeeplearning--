@@ -112,14 +112,31 @@ $$D_{KL}(p||q) = E[\log p(x) -\log q(x)]$$
 $$D_{KL}(p||q) = \sum_{i=1}^{N}p(x_i)\cdot \log \frac{p(x_i)}{q(x_i)}$$
 $注：\log a - \log b = \log(a/b)$
 ### PCA
+https://mp.weixin.qq.com/s?__biz=MzI5NDMzMjY1MA==&mid=2247484396&idx=1&sn=87293156b38b3866c5695b8f1a332088&chksm=ec653269db12bb7f40fe3a7125c7ea4fd1a9141bee8294d902d91a40cdd40f36333eb1049bc6&scene=158#rd
+```python
+#Mean normalize the data
+X = X - np.mean(X,axis=0)
+print('X shape:',X.shape)
 
+#Compute the covariance matrix of your data ( Σ ).
+convariance = np.cov(X,rowvar=False)
+
+#Compute the eigenvectors and the eigenvalues of your covariance matrix
+eigenvalues,eigenvectors = np.linalg.eigh(convariance)
+print('eigenvalues shape:{} eigenvectors shape:{}'.format(eigenvalues.shape,eigenvectors.shape))
+
+#Multiply the first K eigenvectors by your normalized data. 
+X_reduced = X.dot(eigenvectors[:,-n_components:][:,::-1])
+```
 ### SVD
+
+#### 特征值分解、奇异值分解
+https://mp.weixin.qq.com/s/Dv51K8JETakIKe5dPBAPVg
 
 #### SVD 奇异值分解 --- 线性变换几何意义
 https://zhuanlan.zhihu.com/p/36546367
 http://blog.sciencenet.cn/home.php?mod=space&uid=696950&do=blog&quickforward=1&id=699380
 http://blog.sciencenet.cn/blog-696950-699432.html
-
 
 #### 公式
 
@@ -142,6 +159,9 @@ http://littleshi.cn/online/LagMul.html
 
 
 
+## 线代
 
-
+### 特征值分解
+特征值分解是将矩阵分解为由特征值和特征向量表示的矩阵之积的方法。
+### 奇异值分解
 
