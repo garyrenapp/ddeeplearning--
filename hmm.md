@@ -50,3 +50,7 @@ HMM是利用觀測值來推斷狀態的一個算法，而狀態被稱為隱藏�
 ![](./imgs/hmm15.jpg)
 ![](./imgs/hmm16.jpg)
 #### Backward pass 
+* 通过矩阵C先计算最后一列$C_(i,k)$的argmax假设是第一个，通过矩阵D找到$D_{1,k}$的值对应的索引为3,再找到$D_{3,k-1}$对应的索引1，依次类推。
+![](./imgs/hmm17.jpg)
+![](./imgs/hmm18.jpg)
+![](./imgs/hmm19.jpg)
