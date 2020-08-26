@@ -189,7 +189,7 @@ kill -9 pid
 
 ### conda 
 * conda activate name  or source acitvate name 
-* conda remove -n name 
+* conda remove -n name -all
 * conda create -n name python=verison...
 * conda create -n name --clone name 
 * conda env list 
