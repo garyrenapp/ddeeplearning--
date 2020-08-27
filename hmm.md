@@ -20,6 +20,13 @@ HMM是利用觀測值來推斷狀態的一個算法，而狀態被稱為隱藏�
 
 
 ### 计算转移概率
+
+$$ P(t_i | t_{i-1}) = \frac{C(t_{i-1}, t_{i}) + \alpha }{\sum_{j=1}^{N}C(t_{i-1},t_i) +\alpha * N}等价\frac{C(t_{i-1}, t_{i}) + \alpha }{C(t_{i-1}) +\alpha * N} $$
+
+- $N$ is the total number of tags (NN,VB,O.....)
+- $C(t_{i-1}, t_{i})$ is the count of the tuple (previous POS, current POS) in `transition_counts` dictionary.
+- $C(t_{i-1})$ is the count of the previous POS in the `tag_counts` dictionary.
+- $\alpha$ is a smoothing parameter.
 ![](./imgs/hmm4.jpg)
 * 计算$C(t_{i-1},t_i)$
 ![](./imgs/hmm5.jpg)
@@ -34,11 +41,19 @@ HMM是利用觀測值來推斷狀態的一個算法，而狀態被稱為隱藏�
   ![](./imgs/hmm9.jpg)
 
   ### 计算发射概率
+
+$$P(w_i | t_i) = \frac{C(t_i, word_i)+ \alpha}{\sum_{j=1}^{V}C(t_{i},word_{j}) +\alpha * N}等价\frac{C(t_i, word_i)+ \alpha}{C(t_{i}) +\alpha * N}$$
+
+- $C(t_i, word_i)$ is the number of times $word_i$ was associated with $tag_i$ in the training data (stored in `emission_counts` dictionary).
+- $C(t_i)$ is the number of times $tag_i$ was in the training data (stored in `tag_counts` dictionary).
+- $N$ is the number of words in the vocabulary
+- $\alpha$ is a smoothing parameter. 
+
   * 计算单词IN为NN、VB、OO的数量
 ![](./imgs/hmm10.jpg)
 ![](./imgs/hmm11.jpg)
   
-### Viterbi Algorithm 维特比算法
+### Viterbi Algorithm and Dynamic Progaramming 维特比算法
 
 #### Initialization Step
 ![](./imgs/hmm12.jpg)
@@ -46,6 +61,8 @@ HMM是利用觀測值來推斷狀態的一個算法，而狀態被稱為隱藏�
 ![](./imgs/hmm13.jpg)
 * 初始化$d_{i,1}$
 ![](./imgs/hmm14.jpg)
+* 举例
+![](./imgs/hmm13-1.jpg)
 #### Forward pass
 ![](./imgs/hmm15.jpg)
 ![](./imgs/hmm16.jpg)
